@@ -31,10 +31,11 @@ Point your browser to http://localhost:3000
 
 ## Live Demo
 
-Comming soon
+Coming soon
 
 ## Changelog
 
 0.0.1 Use proper package management. Thanks Saulius Grigaliunas.
+
 0.0.0 First commit, each connected player gets to control little crappy guy in the screen. All players can see each other crappy little men!
 
