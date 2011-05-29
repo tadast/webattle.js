@@ -21,6 +21,7 @@ TODO: links to all libraries. For now jfgi, please.
 ## Trying out
 
 If you already have git, node.js and npm
+
     git clone https://github.com/medwezys/webattle.js webattle
     cd webattle
     npm install
