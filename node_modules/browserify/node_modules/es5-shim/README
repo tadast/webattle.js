@@ -1,4 +1,0 @@
-
-Provides compatibility shims so that legacy JavaScript engines
-behave as closely as possible to ES5.
-
