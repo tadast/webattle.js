@@ -20,17 +20,13 @@ TODO: links to all libraries. For now jfgi, please.
 
 ## Trying out
 
-* Install node.js and npm
-* git clone
-* Install dependencies
+If you already have git, node.js and npm
+    git clone https://github.com/medwezys/webattle.js webattle
+    cd webattle
+    npm install
+    node server.js
 
-       npm install
-
-* Run
-
-       node server.js
-
-Point your browser to http://localhost:3000 #chose this port because this url is in my browser history due to extensive RoR development
+Point your browser to http://localhost:3000 
 
 ## Live Demo
 
@@ -38,5 +34,6 @@ Comming soon
 
 ## Changelog
 
+0.0.1 Use proper package management. Thanks Saulius Grigaliunas.
 0.0.0 First commit, each connected player gets to control little crappy guy in the screen. All players can see each other crappy little men!
 

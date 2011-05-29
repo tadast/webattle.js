@@ -1,8 +1,8 @@
 {
   "name": "webattle.js",
-  "description": "webattle.js is a sample multiplayer game created with Node.jsm HTML5 and related buzzwords.",
+  "description": "webattle.js is a sample multiplayer game created with Node.js, HTML5 and related buzzwords.",
   "version": "0.0.1",
-  "author": "Tadas Tamosauskas <tadastamo@gmail.com>",
+  "author": "Tadas Tamosauskas <tadastoo@yahoo.com>",
   "contributors": [
     { "name": "Saulius Grigaliunas", "email": "saulius@ninja.lt" }
   ],
@@ -12,7 +12,7 @@
     "connect": ">= 1.4.1",
     "bison": ">= 1.1.1"
   },
-  "keywords": ["game", "web", "websockets", "interactive", "html5"],
+  "keywords": ["game", "web", "websockets", "interactive", "html5", "multiplayer"],
   "repository": "git://github.com/medwezys/webattle.js",
   "engines": { "node": ">= 0.4.1" }
 }
