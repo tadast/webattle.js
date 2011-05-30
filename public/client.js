@@ -21,6 +21,9 @@ window.onload = function() {
         case Serializer.MSG_PLAYER_POSITION:
           game.updatePlayer(msg);
           break;
+        case Serializer.MSG_NEW_BULLET:
+          game.addBullet(msg);
+          break;
         case Serializer.MSG_GONE_PLAYER:
           game.removePlayer(msg.i);
           break;

@@ -35,6 +35,8 @@ Coming soon
 
 ## Changelog
 
+0.0.2 Little crappy guys got angry, sat into the tanks and now shoot each other. All logic on the client side which makes easy to cheat (or hurt your pc) editing client side script.
+
 0.0.1 Use proper package management. Thanks Saulius Grigaliunas.
 
 0.0.0 First commit, each connected player gets to control little crappy guy in the screen. All players can see each other crappy little men!

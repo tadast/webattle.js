@@ -28,6 +28,9 @@ socket.on('connection', function(client){
           msg["i"] = getPlayerId(client.sessionId);
           client.broadcast(Serializer.serialize(msg.t, msg));
           break;
+        case Serializer.MSG_NEW_BULLET:
+          client.broadcast(data);
+          break;
         default:
           console.log("unknown message:" + msg);
       };
