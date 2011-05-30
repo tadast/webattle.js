@@ -1,88 +1,109 @@
 var Game = function(sock, ser) {
-  var players = [];
-  this.scene = sjs.Scene()
+  var GAME_OPTIONS = {w: 640, h:480, color: '#333'};
+  var TANK_SIZE = {w: 32, h: 32};
+  var ANGLES = {n: 0.0, e: 1.57079633, s: 3.1415926, w: 4.71238898} //north, east, south, west
+  var REV_ANGLES = {0.0: 'n', 1.57079633: 'e', 3.1415926: 's', 4.71238898: 'w'}
+  this.scene = sjs.Scene(GAME_OPTIONS);
   
-  var stopped = false;
+  var players = [];
   var socket = sock;
-  var background = this.scene.Layer('background');
+  var background = this.scene.Layer('background', GAME_OPTIONS);
   var ground = this.scene.Sprite('assets/images/ground.png', background);
-  ground.setW(window.innerWidth / 2);
+  ground.setW(window.innerWidth);
   ground.move(0, 160);
 
-  var rock1 = this.scene.Sprite('assets/images/rock.png', background);
-  rock1.move(150, 140);
-  var rock2 = this.scene.Sprite('assets/images/rock.png', background);
-  rock2.move(350, 140);
-
-  var sprite = this.scene.Sprite('assets/images/character.png');
-  sprite.move(50, 80);
-  sprite.size(21, 51);
-
-  var cycle = new sjs.Cycle([[4, 3, 2],
-                             [34, 3, 3],
-                             [64, 3, 3],
-                             [94, 3, 3],
-                             [124, 3, 3],
-                             [154, 3, 3],
-                             [184, 3, 3]]);
-  cycle.sprites = [sprite];
-
+  var tank = this.scene.Sprite('assets/images/tank.png', background);
+  tank.size(TANK_SIZE.h, TANK_SIZE.w);
+  tank.reset = function() {
+    tank.x = Math.random() * (GAME_OPTIONS.w - 2 * TANK_SIZE.w) + TANK_SIZE.w;
+    tank.y = Math.random() * (GAME_OPTIONS.h - 2 * TANK_SIZE.h) + TANK_SIZE.h;
+    tank.setAngle(0);
+    tank.update();
+  };
+  tank.reset();
+  
   var input  = new sjs.Input();
 
-  var yv = 0, result = document.getElementById('result');
+  var result = document.getElementById('result');
 
+  var cycle = new sjs.Cycle([[0, 0, 1]]);
+  var speed = 4;
   function paint() {
-      var xv = 0;
-      // gravity
-      yv += 0.3;
-      var collision = ground.collidesWith(sprite);
+    if(input.keyboard.left) {
+      if (!doesColideWest()){
+        tank.move(-speed, 0);
+      };
+      tank.scale(1, 1);
+      tank.setAngle(ANGLES.w);
+    }else if(input.keyboard.right) {
+      if (!doesColideEast()){
+        tank.move(speed, 0);
+      };
+      tank.scale(-1, 1);
+      tank.setAngle(ANGLES.e);
+    }else if(input.keyboard.up) {
+      if (!doesColideNorth()){
+        tank.move(0, -speed);
+      };
+      tank.scale(1, 1);
+      tank.setAngle(ANGLES.n);
+    }else if(input.keyboard.down) {
+      if (!doesColideSouth()){
+        tank.move(0, speed);
+      };
+      tank.scale(-1, 1);
+      tank.setAngle(ANGLES.s);
+    }
 
-      if(input.keyboard.left) {
-          sprite.move(-4, 0);
-          if(sprite.collidesWith([rock1, rock2]))
-              sprite.move(4, 0);
-          sprite.scale(1, 1);
-      }
-      if(input.keyboard.right) {
-          sprite.move(4, 0);
-          if(sprite.collidesWith([rock1, rock2]))
-              sprite.move(-4, 0);
-          sprite.scale(-1, 1);
-      }
+    if(input.keyboard.space){
+      console.log("x:"+tank.x+" y:"+tank.y);
+    };
+    
+    if(input.arrows())
+        cycle.next(ticker.lastTicksElapsed);
+    else
+        cycle.reset();
 
-
-      if(sprite.collidesWithArray([rock1, rock2, ground])) {
-          yv = 0;
-          if(input.keyboard.up) {
-              yv = -5;
-              sprite.move(0, yv);
-          }
-      } else {
-          sprite.move(0, yv);
-      }
-
-      if(input.arrows())
-          cycle.next(ticker.lastTicksElapsed);
-      else
-          cycle.reset();
-
-      sprite.update();
-      
-      // this shoudn't be necessary if nothing changed with canvas
-      rock2.update();
-      rock1.update();
-      ground.update();
-      
-      if(ticker.currentTick % 30 == 0) {
-          result.innerHTML = ' ' + ticker.load + '%';
-      }
-      socket.send(ser.serialize(ser.MSG_PLAYER_POSITION, {x: sprite.x, y: sprite.y}));
+    tank.update();
+    
+    if(ticker.currentTick % 30 == 0) {
+        result.innerHTML = ' ' + ticker.load + '%';
+    }
+    socket.send(ser.serialize(ser.MSG_PLAYER_POSITION, {x: tank.x, y: tank.y, a: REV_ANGLES[tank.angle]}));
+  };
+  
+  // TODO: move to tank object
+  var doesColideWest = function(){
+    // with game world
+    if((tank.x - speed) <= 0.0){
+      return true;
+    };
+    return false;
+  };
+  var doesColideEast = function(){
+    if((tank.x + tank.w) >= GAME_OPTIONS.w){
+      return true;
+    };
+    return false;
+  };
+  var doesColideNorth = function(){
+    // with game world
+    if((tank.y - speed) <= 0.0){
+      return true;
+    };
+    return false;
+  };
+  var doesColideSouth = function(){
+    if((tank.y + tank.h) >= GAME_OPTIONS.h){
+      return true;
+    };
+    return false;
   };
   
   this.createPlayer = function(id){
-    var tmpPlayer = this.scene.Sprite('assets/images/character.png');
+    var tmpPlayer = this.scene.Sprite('assets/images/tank.png', background);
     tmpPlayer.move(50, 80);
-    tmpPlayer.size(21, 51);
+    tmpPlayer.size(30, 30);
     tmpPlayer.id = id; //ugh, adding id property to sprite illegaly
     players.push(tmpPlayer);
     tmpPlayer.update();
@@ -95,6 +116,7 @@ var Game = function(sock, ser) {
       if(msg.i == players[i].id){
         players[i].setX(msg.x)
         players[i].setY(msg.y);
+        players[i].setAngle(ANGLES[msg.a]);
         players[i].update();
       }
     };
