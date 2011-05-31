@@ -1,7 +1,8 @@
 window.onload = function() {
+  require.paths.push('./lib');
   var Serializer = require('./serializer');
   var socket = new io.Socket('localhost',{
-    port: 3000
+    port: 10288
   });
   var game;
   

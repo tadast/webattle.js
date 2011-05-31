@@ -1,4 +1,4 @@
-var PORT = 3000;
+var PORT = 10288;
 var connect = require('connect');
 var io = require('socket.io');
 var Serializer = require('./lib/serializer.js');

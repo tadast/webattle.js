@@ -25,7 +25,13 @@ If you already have git, node.js and npm
     git clone https://github.com/medwezys/webattle.js webattle
     cd webattle
     npm install
+    
+To run you have two options:
+
     node server.js
+    #or
+    gem install foreman
+    foreman start #uses Procfile
 
 Point your browser to http://localhost:3000 
 
