@@ -6,8 +6,8 @@ var Game = function(sock, ser) {
   this.scene = sjs.Scene(GAME_OPTIONS);
   
   // keep all game objects in arrows
-  var players = [];
-  var bullets = [];
+  var players = sjs.SpriteList([]);
+  var bullets = sjs.SpriteList([]);
   
   var socket = sock;
   var background = this.scene.Layer('background', GAME_OPTIONS);
@@ -20,6 +20,7 @@ var Game = function(sock, ser) {
   // var tank = new Tank(this.scene, background);
   tank.size(TANK_SIZE.h, TANK_SIZE.w);
   tank.game = this;
+  
   // TODO: move these methods to tank class------
   tank.canFire = true;
   tank.reset = function() {
@@ -60,24 +61,21 @@ var Game = function(sock, ser) {
   function paint() {
     
     // -------- HANDLE BULLETS ----------
-    for(var i=0; i < bullets.length; i++) {
-      var bul = bullets[i];
+    var bul;
+    while(bul = bullets.iterate()) {
       bul.applyVelocity();
       bul.update();
       var cwt = bul.collidesWith(tank); // cache expensive operation
       if(bul.x < 0 || bul.y < 0 || bul.x > GAME_OPTIONS.w || bul.y > GAME_OPTIONS.h || bul.collidesWithArray(players) || cwt){
-          
-          bullets.splice(i, 1);
-          bul.remove();
+          bullets.remove(bul);
+          // bul.remove();
           if (cwt){
             setTimeout(tank.reset, 500); // huh, sometimes tank updates all players with the new coordinates before they detect collision;
           };
-          i--;
       };
     };
     // -----------------------------------
     
-
     if(input.keyboard.left) {
       if (!doesColideWest()){
         tank.move(-speed, 0);
@@ -163,7 +161,7 @@ var Game = function(sock, ser) {
     b.xv = msg.xv;
     b.yv = msg.yv;
     b.update();
-    bullets.push(b);
+    bullets.add(b);
     return b;
   }
   
@@ -172,28 +170,30 @@ var Game = function(sock, ser) {
     tmpPlayer.move(50, 80);
     tmpPlayer.size(30, 30);
     tmpPlayer.id = id; //ugh, adding id property to sprite illegaly
-    players.push(tmpPlayer);
+    players.add(tmpPlayer);
     tmpPlayer.update();
     console.log("I haz " + players.length + " playerz now");
   };
   
   // msg is a hash of {i: id, x: x, y: y}
   this.updatePlayer = function(msg){
-    for (var i=0; i < players.length; i++) {
-      if(msg.i == players[i].id){
-        players[i].setX(msg.x)
-        players[i].setY(msg.y);
-        players[i].setAngle(ANGLES[msg.a]);
-        players[i].update();
+    var player;
+    while (player = players.iterate()) {
+      if(msg.i == player.id){
+        player.setX(msg.x)
+        player.setY(msg.y);
+        player.setAngle(ANGLES[msg.a]);
+        player.update();
       }
     };
   };
   
   this.removePlayer = function(id){
-    for (var i=0; i < players.length; i++) {
-    if(players[i].id == id){
-      players[i].remove();
-      players.splice(i, 1);
+    var player;
+    while (player = players.iterate()) {
+    if(player.id == id){
+      //player.remove();
+      players.remove(player);
       break;
     };
     console.log("I haz " + players.lenght + " players now");
