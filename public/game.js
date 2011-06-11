@@ -5,7 +5,7 @@ var Game = function(sock, ser) {
   var REV_ANGLES = {0.0: 'n', 1.57079633: 'e', 3.1415926: 's', 4.71238898: 'w'}
   this.scene = sjs.Scene(GAME_OPTIONS);
   
-  // keep all game objects in arrows
+  // keep all game objects in spritelists
   var players = sjs.SpriteList([]);
   var bullets = sjs.SpriteList([]);
   
@@ -16,8 +16,8 @@ var Game = function(sock, ser) {
   ground.setW(window.innerWidth);
   ground.move(0, 160);
 
-  var tank = this.scene.Sprite('assets/images/tank.png', background);
-  // var tank = new Tank(this.scene, background);
+  //var tank = this.scene.Sprite('assets/images/tank.png', background);
+  var tank = new Tank(this.scene, background, this);
   tank.size(TANK_SIZE.h, TANK_SIZE.w);
   tank.game = this;
   
