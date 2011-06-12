@@ -15,12 +15,25 @@ var Tank = function(scene, background, game){
 Tank.prototype = new sjs.Sprite();
 Tank.prototype.constructor = Tank;
 
-Tank.prototype.reset = function reset(){
-  // huh, sometimes tank updates all players with the new coordinates before they detect collision;
-  var tx = Math.random() * (this.game.getOpts().w - 2 * this.w) + this.w;
-  var ty = Math.random() * (this.game.getOpts().h - 2 * this.h) + this.h;
-  this.position(tx, ty);
-  this.update();
+// passive does not place the tank in a new position. Used for remote tanks
+// that update their position itselves
+Tank.prototype.reset = function reset(passive){
+  this.size(0,0);
+  var tank = this;
+  setTimeout(function(){tank._reset(passive)}, 1500);
+};
+
+// bit of a dirty hack
+// passive does not place the tank in a new position. Used for remote tanks
+// that update their position itselves
+Tank.prototype._reset = function _reset(passive){
+  this.size(32,32);
+  if (!passive) {
+    var tx = Math.random() * (this.game.getOpts().w - 2 * this.w) + this.w;
+    var ty = Math.random() * (this.game.getOpts().h - 2 * this.h) + this.h;
+    this.position(tx, ty);
+    this.update();
+  };
   return true;
 };
 

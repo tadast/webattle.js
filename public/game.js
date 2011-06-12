@@ -8,12 +8,15 @@ var Game = function(sock, ser) {
   this.scene = sjs.Scene(GAMEOPTS);
   
   // keep all game objects in spritelists
+  var debris = sjs.SpriteList([]); 
   var players = sjs.SpriteList([]);
   var bullets = sjs.SpriteList([]);
   
   var socket = sock;
   var background = this.scene.Layer('background', GAMEOPTS);
+  var debrisLayer = this.scene.Layer('debris', {w: 640, h:480});
   var bulletLayer = this.scene.Layer('bullets', {w: 640, h:480});
+
   var ground = this.scene.Sprite('assets/images/ground.png', background);
   ground.setW(window.innerWidth);
   ground.move(0, 160);
@@ -33,16 +36,46 @@ var Game = function(sock, ser) {
     while(bul = bullets.iterate()) {
       bul.applyVelocity();
       bul.update();
-      var cwt = bul.collidesWith(tank); // cache expensive operation
-      if(bul.x < 0 || bul.y < 0 || bul.x > GAMEOPTS.w || bul.y > GAMEOPTS.h || bul.collidesWithArray(players) || cwt){
+      if(bul.x < 0 || bul.y < 0 || bul.x > GAMEOPTS.w || bul.y > GAMEOPTS.h){
           bullets.remove(bul);
           // bul.remove();
-          if (cwt){
-            tank.reset()
-          };
+      };
+      if (bul.collidesWith(tank)){
+        bullets.remove(bul);
+        explosion(tank);
+        tank.reset();
+      };
+      var collidePlayer;
+      if(collidePlayer = bul.collidesWithArray(players)){
+        bullets.remove(bul);
+        explosion(collidePlayer);
+        collidePlayer.reset(true);
       };
     };
-    // -----------------------------------
+    // -------- HANDLE EXPLOSION DEBRIS ---
+    var debri;
+    while(debri = debris.iterate()) {
+        debri.applyVelocity();
+        if(debri.rv < 0.001) {
+        //if(false){
+            debris.remove(debri);
+            //debri.remove();
+        } else {
+            debri.update();
+        }
+        debri.xv *= 0.95;
+        debri.yv *= 0.95;
+        debri.rv *= 0.95;
+    }
+    
+    // canvas backend clears screen automatically, so all players are cleaned as well
+    // therefore we need to draw them to each frame. It is not true for html backend
+    if (background.useCanvas) {
+      var p;
+      while(p = players.iterate()){
+        p.update();
+      }
+    };
     
     if(input.keyboard.left) {
       if (!doesColideWest()){
@@ -75,7 +108,7 @@ var Game = function(sock, ser) {
     };
 
     tank.update();
-    
+
     if(ticker.currentTick % 30 == 0) {
         result.innerHTML = ' ' + ticker.load + '%';
     }
@@ -110,6 +143,28 @@ var Game = function(sock, ser) {
     return false;
   };
   
+  // creates a cloud of debris and adds randov velocities to each particle
+  // adds all debris to the list. Does nothing to original sprite (i.e. removal of it
+  // has to be done out of this function)
+  var explosion = function explosion(sprite){
+    if(Math.random() > 0.5) {
+      var x = 4 + Math.random() * 24 | 0;
+      var y = 4 + Math.random() * 24 | 0;
+      var _debris = sprite.explode4(x, y, debrisLayer);
+    } else {
+      var horizontal = Math.random() > 0.5;
+      var position = 4 + Math.random() * 24 | 0;
+      var _debris = sprite.explode2(position, horizontal, debrisLayer);
+    }
+    for (var j=0; j < _debris.length; j++) {
+      var part = _debris[j];
+      part.xv = 7 * (Math.random() - 0.5)
+      part.yv = 7 * (Math.random() - 0.5)
+      part.rv = Math.random() / 2;
+      part.applyVelocity();
+    }
+    debris.add(_debris);
+  }
   // msg: {x : x position, y: y position, xv: x velocity, yv: y velocity}
   // send: optional parameter. If true then other players will receive info about bullet.
   // send is only used for locally created bullets
@@ -130,9 +185,10 @@ var Game = function(sock, ser) {
   };
   
   this.createPlayer = function(id){
-    var tmpPlayer = this.scene.Sprite('assets/images/tank.png', background);
+    var tmpPlayer = new Tank(this.scene, background, this);
+    // var tmpPlayer = this.scene.Sprite('assets/images/tank.png', background);
     tmpPlayer.move(50, 80);
-    tmpPlayer.size(30, 30);
+    tmpPlayer.size(32, 32);
     tmpPlayer.id = id; //ugh, adding id property to sprite illegaly
     players.add(tmpPlayer);
     tmpPlayer.update();
