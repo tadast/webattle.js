@@ -33,7 +33,9 @@ To run you have two options:
     gem install foreman
     foreman start #uses Procfile
 
-Point your browser to http://localhost:3000 
+Point your browser to http://localhost:3000
+
+If you are just starting to learn and find code too difficult, checkout earlier tags, see changelog below.
 
 ## Live Demo
 
