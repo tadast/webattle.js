@@ -1,5 +1,12 @@
 var Game = function(sock, ser) {
-  var GAMEOPTS = {w: 640, h:480, color: '#000', speed: 4}
+  var mapLoader = new MapLoader(emptyMap);
+  
+  var GAMEOPTS = {
+    w: mapLoader.widthInPixels(), 
+    h: mapLoader.heightInPixels(), 
+    color: '#000', 
+    speed: 4
+  };
   this.getOpts = function getOpts(){
     return GAMEOPTS;
   };
@@ -7,20 +14,17 @@ var Game = function(sock, ser) {
   var REV_ANGLES = {0.0: 'n', 1.57079633: 'e', 3.1415926: 's', 4.71238898: 'w'}
   this.scene = sjs.Scene(GAMEOPTS);
   
+  var socket = sock;
+  var background = this.scene.Layer('background', GAMEOPTS);
+  var debrisLayer = this.scene.Layer('debris', {w: GAMEOPTS.w, h: GAMEOPTS.h});
+  var bulletLayer = this.scene.Layer('bullets', {w: GAMEOPTS.w, h: GAMEOPTS.h});
+
   // keep all game objects in spritelists
   var debris = sjs.SpriteList([]); 
   var players = sjs.SpriteList([]);
   var bullets = sjs.SpriteList([]);
+  var bricks = mapLoader.getSpritelistFor(this.scene, background, 1);
   
-  var socket = sock;
-  var background = this.scene.Layer('background', GAMEOPTS);
-  var debrisLayer = this.scene.Layer('debris', {w: 640, h:480});
-  var bulletLayer = this.scene.Layer('bullets', {w: 640, h:480});
-
-  var ground = this.scene.Sprite('assets/images/ground.png', background);
-  ground.setW(window.innerWidth);
-  ground.move(0, 160);
-
   var tank = new Tank(this.scene, background, this);
   tank.reset();
   
@@ -40,7 +44,7 @@ var Game = function(sock, ser) {
           bullets.remove(bul);
           // bul.remove();
       };
-      if (bul.collidesWith(tank)){
+      if(bul.collidesWith(tank)){
         bullets.remove(bul);
         explosion(tank);
         tank.reset();
@@ -71,9 +75,12 @@ var Game = function(sock, ser) {
     // canvas backend clears screen automatically, so all players are cleaned as well
     // therefore we need to draw them to each frame. It is not true for html backend
     if (background.useCanvas) {
-      var p;
-      while(p = players.iterate()){
-        p.update();
+      var x;
+      while(x = players.iterate()){
+        x.update();
+      }
+      while(x = bricks.iterate()){
+        x.update();
       }
     };
     

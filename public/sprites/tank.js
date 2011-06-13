@@ -25,7 +25,7 @@ Tank.prototype.reset = function reset(passive){
 
 // bit of a dirty hack
 // passive does not place the tank in a new position. Used for remote tanks
-// that update their position itselves
+// that update their position themselves
 Tank.prototype._reset = function _reset(passive){
   this.size(32,32);
   if (!passive) {
