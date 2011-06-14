@@ -15,23 +15,25 @@ var Game = function(sock, ser) {
   this.scene = sjs.Scene(GAMEOPTS);
   
   var socket = sock;
-  var background = this.scene.Layer('background', GAMEOPTS);
-  var debrisLayer = this.scene.Layer('debris', {w: GAMEOPTS.w, h: GAMEOPTS.h});
-  var bulletLayer = this.scene.Layer('bullets', {w: GAMEOPTS.w, h: GAMEOPTS.h});
+  var staticOpts = GAMEOPTS;
+  staticOpts['autoClear'] = false;
+  var staticLayer = this.scene.Layer('staticLayer', staticOpts );
+  var dinamicLayer = this.scene.Layer('dinamicLayer', {w: GAMEOPTS.w, h: GAMEOPTS.h});
 
   // keep all game objects in spritelists
   var debris = sjs.SpriteList([]); 
   var players = sjs.SpriteList([]);
   var bullets = sjs.SpriteList([]);
-  var bricks = mapLoader.getSpritelistFor(this.scene, background, 1);
+  var bricks = mapLoader.getSpritelistFor(this.scene, staticLayer, 1);
   
-  var tank = new Tank(this.scene, background, this);
+  var tank = new Tank(this.scene, dinamicLayer, this);
   tank.reset();
   
   var input  = new sjs.Input();
 
   var result = document.getElementById('result');
 
+  var bricksDrawn = false; // we only need to draw bricks once, as staticLayer is set to not autoclear;
   // var cycle = new sjs.Cycle([[0, 0, 1]]);
   function paint() {
     
@@ -40,7 +42,7 @@ var Game = function(sock, ser) {
     while(bul = bullets.iterate()) {
       bul.applyVelocity();
       bul.update();
-      if(bul.x < 0 || bul.y < 0 || bul.x > GAMEOPTS.w || bul.y > GAMEOPTS.h){
+      if(bul.x < 0 || bul.y < 0 || bul.x > GAMEOPTS.w || bul.y > GAMEOPTS.h || bul.collidesWithArray(bricks)){
           bullets.remove(bul);
           // bul.remove();
       };
@@ -74,13 +76,16 @@ var Game = function(sock, ser) {
     
     // canvas backend clears screen automatically, so all players are cleaned as well
     // therefore we need to draw them to each frame. It is not true for html backend
-    if (background.useCanvas) {
+    if (staticLayer.useCanvas) {
       var x;
       while(x = players.iterate()){
         x.update();
       }
-      while(x = bricks.iterate()){
-        x.update();
+      if(!bricksDrawn){ // we only draw it once
+        while(x = bricks.iterate()){
+          x.update();
+        }
+        bricksDrawn = true;
       }
     };
     
@@ -157,11 +162,11 @@ var Game = function(sock, ser) {
     if(Math.random() > 0.5) {
       var x = 4 + Math.random() * 24 | 0;
       var y = 4 + Math.random() * 24 | 0;
-      var _debris = sprite.explode4(x, y, debrisLayer);
+      var _debris = sprite.explode4(x, y, dinamicLayer);
     } else {
       var horizontal = Math.random() > 0.5;
       var position = 4 + Math.random() * 24 | 0;
-      var _debris = sprite.explode2(position, horizontal, debrisLayer);
+      var _debris = sprite.explode2(position, horizontal, dinamicLayer);
     }
     for (var j=0; j < _debris.length; j++) {
       var part = _debris[j];
@@ -177,7 +182,7 @@ var Game = function(sock, ser) {
   // send is only used for locally created bullets
   this.addBullet = function(msg, send){
     var speed_multipl = 1.2;
-    var b = this.scene.Sprite(null, bulletLayer);
+    var b = this.scene.Sprite(null, dinamicLayer);
     b.position(msg.x, msg.y);
     b.size(4, 4);
     b.setColor('#fff');
@@ -192,8 +197,7 @@ var Game = function(sock, ser) {
   };
   
   this.createPlayer = function(id){
-    var tmpPlayer = new Tank(this.scene, background, this);
-    // var tmpPlayer = this.scene.Sprite('assets/images/tank.png', background);
+    var tmpPlayer = new Tank(this.scene, dinamicLayer, this);
     tmpPlayer.move(50, 80);
     tmpPlayer.size(32, 32);
     tmpPlayer.id = id; //ugh, adding id property to sprite illegaly
