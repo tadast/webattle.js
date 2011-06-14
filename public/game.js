@@ -18,7 +18,7 @@ var Game = function(sock, ser) {
   var staticOpts = GAMEOPTS;
   staticOpts['autoClear'] = false;
   var staticLayer = this.scene.Layer('staticLayer', staticOpts );
-  var dinamicLayer = this.scene.Layer('dinamicLayer', {w: GAMEOPTS.w, h: GAMEOPTS.h});
+  var dynamicLayer = this.scene.Layer('dynamicLayer', {w: GAMEOPTS.w, h: GAMEOPTS.h});
 
   // keep all game objects in spritelists
   var debris = sjs.SpriteList([]); 
@@ -26,7 +26,7 @@ var Game = function(sock, ser) {
   var bullets = sjs.SpriteList([]);
   var bricks = mapLoader.getSpritelistFor(this.scene, staticLayer, 1);
   
-  var tank = new Tank(this.scene, dinamicLayer, this);
+  var tank = new Tank(this.scene, dynamicLayer, this);
   tank.reset();
   
   var input  = new sjs.Input();
@@ -89,6 +89,7 @@ var Game = function(sock, ser) {
       }
     };
     
+    var tankState = {x: tank.x, y: tank.y};
     if(input.keyboard.left) {
       if (!doesColideWest()){
         tank.move(-GAMEOPTS.speed, 0);
@@ -114,7 +115,10 @@ var Game = function(sock, ser) {
       tank.scale(-1, 1);
       tank.setAngle(ANGLES.s);
     }
-
+    if (tank.collidesWithArray(bricks)){
+      //reset previous state
+      tank.position(tankState.x, tankState.y);
+    };
     if(input.keyboard.space){
       tank.shoot();
     };
@@ -160,13 +164,13 @@ var Game = function(sock, ser) {
   // has to be done out of this function)
   var explosion = function explosion(sprite){
     if(Math.random() > 0.5) {
-      var x = 4 + Math.random() * 24 | 0;
-      var y = 4 + Math.random() * 24 | 0;
-      var _debris = sprite.explode4(x, y, dinamicLayer);
+      var x = 1 + Math.random() * sprite.w-1 | 0;
+      var y = 1 + Math.random() * sprite.h-1 | 0;
+      var _debris = sprite.explode4(x, y, dynamicLayer);
     } else {
       var horizontal = Math.random() > 0.5;
-      var position = 4 + Math.random() * 24 | 0;
-      var _debris = sprite.explode2(position, horizontal, dinamicLayer);
+      var position = 1 + Math.random() * sprite.w-1 | 0;
+      var _debris = sprite.explode2(position, horizontal, dynamicLayer);
     }
     for (var j=0; j < _debris.length; j++) {
       var part = _debris[j];
@@ -182,7 +186,7 @@ var Game = function(sock, ser) {
   // send is only used for locally created bullets
   this.addBullet = function(msg, send){
     var speed_multipl = 1.2;
-    var b = this.scene.Sprite(null, dinamicLayer);
+    var b = this.scene.Sprite(null, dynamicLayer);
     b.position(msg.x, msg.y);
     b.size(4, 4);
     b.setColor('#fff');
@@ -197,9 +201,7 @@ var Game = function(sock, ser) {
   };
   
   this.createPlayer = function(id){
-    var tmpPlayer = new Tank(this.scene, dinamicLayer, this);
-    tmpPlayer.move(50, 80);
-    tmpPlayer.size(32, 32);
+    var tmpPlayer = new Tank(this.scene, dynamicLayer, this);
     tmpPlayer.id = id; //ugh, adding id property to sprite illegaly
     players.add(tmpPlayer);
     tmpPlayer.update();

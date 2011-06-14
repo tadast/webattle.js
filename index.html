@@ -12,4 +12,13 @@
 </head>
 <body>
   I eat <span id="result"></span> of your CPU
+  <br/>
+  <a href="?canvas=1" id="canvas-mode">Use canvas backend.</a> <a href="?html=1" id="html-mode">Use HTML backend</a>
 </body>
+<script>
+  if(window.location.href.indexOf('canvas') != -1) {
+      document.getElementById('canvas-mode').style.display = 'none';
+  } else {
+      document.getElementById('html-mode').style.display = 'none';
+  }
+</script>

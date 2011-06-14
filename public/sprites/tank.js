@@ -1,11 +1,12 @@
 var Tank = function(scene, background, game){
   //-- Sprite.js setup --
+  this.s = 24;
   this.scene = scene;
   this.layer = background;
-  this.src = 'assets/images/tank.png';
+  this.src = 'assets/images/tank24.png';
   this.setDom();
   this.loadImg(this.src);
-  this.size(32,32);
+  this.size(this.s,this.s);
   //-- Custom logic --
   this.speed = game.getOpts().speed;
   this.game = game;
@@ -27,10 +28,10 @@ Tank.prototype.reset = function reset(passive){
 // passive does not place the tank in a new position. Used for remote tanks
 // that update their position themselves
 Tank.prototype._reset = function _reset(passive){
-  this.size(32,32);
+  this.size(this.s,this.s);
   if (!passive) {
-    var tx = Math.random() * (this.game.getOpts().w - 2 * this.w) + this.w;
-    var ty = Math.random() * (this.game.getOpts().h - 2 * this.h) + this.h;
+    var tx = 200;//Math.random() * (this.game.getOpts().w - 2 * this.w) + this.w;
+    var ty = 400;//Math.random() * (this.game.getOpts().h - 2 * this.h) + this.h;
     this.position(tx, ty);
     this.update();
   };
