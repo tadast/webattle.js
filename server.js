@@ -1,7 +1,7 @@
-var PORT = 10288;
 var connect = require('connect');
 var io = require('socket.io');
 var Serializer = require('./lib/serializer.js');
+var Config = require('./lib/config.js');
 var Player = new require('./lib/player.js');
 
 var server = connect.createServer();
@@ -11,7 +11,7 @@ server.use(require('browserify')({
     require: ['bison'],
     mount : '/browserify.js',
 }));
-server.listen(PORT);
+server.listen(Config.port);
 
 var players = [];
 var socket = io.listen(server);
@@ -89,4 +89,4 @@ var addPlayer = function(client){
   console.log("Player added " + p.id);
 };
 
-console.log('Yaw dawg, point your ugly browser to http://localhost:'+PORT);
+console.log('Yaw dawg, point your ugly browser to http://'+Config.ip+':'+Config.port);
