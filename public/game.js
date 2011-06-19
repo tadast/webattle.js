@@ -1,11 +1,11 @@
 var Game = function(sock, ser) {
-  var mapLoader = new MapLoader(emptyMap);
+  this.mapLoader = new MapLoader(defaultMap);
   
   var GAMEOPTS = {
-    w: mapLoader.widthInPixels(), 
-    h: mapLoader.heightInPixels(), 
+    w: this.mapLoader.widthInPixels(), 
+    h: this.mapLoader.heightInPixels(), 
     color: '#000', 
-    speed: 4
+    speed: 3
   };
   this.getOpts = function getOpts(){
     return GAMEOPTS;
@@ -24,7 +24,7 @@ var Game = function(sock, ser) {
   var debris = sjs.SpriteList([]); 
   var players = sjs.SpriteList([]);
   var bullets = sjs.SpriteList([]);
-  var bricks = mapLoader.getSpritelistFor(this.scene, staticLayer, 1);
+  var bricks = this.mapLoader.getSpritelistFor(this.scene, staticLayer, 1);
   
   var tank = new Tank(this.scene, dynamicLayer, this);
   tank.reset();
@@ -34,6 +34,7 @@ var Game = function(sock, ser) {
   var result = document.getElementById('result');
 
   var bricksDrawn = false; // we only need to draw bricks once, as staticLayer is set to not autoclear;
+  var tankState = {x: tank.x, y: tank.y};
   // var cycle = new sjs.Cycle([[0, 0, 1]]);
   function paint() {
     
@@ -89,35 +90,41 @@ var Game = function(sock, ser) {
       }
     };
     
-    var tankState = {x: tank.x, y: tank.y};
     if(input.keyboard.left) {
+      tank.scale(1, 1);
+      tank.setAngle(ANGLES.w);
       if (!doesColideWest()){
         tank.move(-GAMEOPTS.speed, 0);
       };
-      tank.scale(1, 1);
-      tank.setAngle(ANGLES.w);
     }else if(input.keyboard.right) {
+      tank.scale(-1, 1);
+      tank.setAngle(ANGLES.e);
       if (!doesColideEast()){
         tank.move(GAMEOPTS.speed, 0);
       };
-      tank.scale(-1, 1);
-      tank.setAngle(ANGLES.e);
     }else if(input.keyboard.up) {
+      tank.scale(1, 1);
+      tank.setAngle(ANGLES.n);
       if (!doesColideNorth()){
         tank.move(0, -GAMEOPTS.speed);
       };
-      tank.scale(1, 1);
-      tank.setAngle(ANGLES.n);
     }else if(input.keyboard.down) {
+      tank.scale(-1, 1);
+      tank.setAngle(ANGLES.s);
       if (!doesColideSouth()){
         tank.move(0, GAMEOPTS.speed);
       };
-      tank.scale(-1, 1);
-      tank.setAngle(ANGLES.s);
-    }
+    };
+    
     if (tank.collidesWithArray(bricks)){
-      //reset previous state
-      tank.position(tankState.x, tankState.y);
+      if (tank.x == tankState.x && tank.y == tankState.y){ //TODO: fix collision detection to work without this hack
+        tank.move(0, GAMEOPTS.speed);
+      } else {
+        //reset previous state
+        tank.position(tankState.x, tankState.y);
+      }
+    } else {
+      tankState = {x: tank.x, y: tank.y};
     };
     if(input.keyboard.space){
       tank.shoot();
@@ -204,8 +211,8 @@ var Game = function(sock, ser) {
     var tmpPlayer = new Tank(this.scene, dynamicLayer, this);
     tmpPlayer.id = id; //ugh, adding id property to sprite illegaly
     players.add(tmpPlayer);
-    tmpPlayer.update();
-    console.log("I haz " + players.length + " playerz now");
+    tmpPlayer.reset(true);
+    // console.log("I haz " + players.length + " playerz now");
   };
   
   // msg is a hash of {i: id, x: x, y: y}
@@ -229,7 +236,7 @@ var Game = function(sock, ser) {
       players.remove(player);
       break;
     };
-    console.log("I haz " + players.lenght + " players now");
+    // console.log("I haz " + players.lenght + " players now");
   };
   };
   var ticker = this.scene.Ticker(35, paint);

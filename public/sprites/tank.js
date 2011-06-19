@@ -30,9 +30,9 @@ Tank.prototype.reset = function reset(passive){
 Tank.prototype._reset = function _reset(passive){
   this.size(this.s,this.s);
   if (!passive) {
-    var tx = 200;//Math.random() * (this.game.getOpts().w - 2 * this.w) + this.w;
-    var ty = 400;//Math.random() * (this.game.getOpts().h - 2 * this.h) + this.h;
-    this.position(tx, ty);
+    var coords = this.game.mapLoader.randomCoordinateFor(9);
+    var compensate = (this.game.mapLoader.squareSize*2-this.w)/2;
+    this.position(coords[0]+compensate, coords[1]);
     this.update();
   };
   return true;
