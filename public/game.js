@@ -91,29 +91,13 @@ var Game = function(sock, ser) {
     };
     
     if(input.keyboard.left) {
-      tank.scale(1, 1);
-      tank.setAngle(ANGLES.w);
-      if (!doesColideWest()){
-        tank.move(-GAMEOPTS.speed, 0);
-      };
+      tank.onArrowLeft();
     }else if(input.keyboard.right) {
-      tank.scale(-1, 1);
-      tank.setAngle(ANGLES.e);
-      if (!doesColideEast()){
-        tank.move(GAMEOPTS.speed, 0);
-      };
+      tank.onArrowRight();
     }else if(input.keyboard.up) {
-      tank.scale(1, 1);
-      tank.setAngle(ANGLES.n);
-      if (!doesColideNorth()){
-        tank.move(0, -GAMEOPTS.speed);
-      };
+      tank.onArrowUp();
     }else if(input.keyboard.down) {
-      tank.scale(-1, 1);
-      tank.setAngle(ANGLES.s);
-      if (!doesColideSouth()){
-        tank.move(0, GAMEOPTS.speed);
-      };
+      tank.onArrowDown();
     };
     
     if (tank.collidesWithArray(bricks)){
@@ -136,34 +120,6 @@ var Game = function(sock, ser) {
         result.innerHTML = ' ' + ticker.load + '%';
     }
     socket.send(ser.serialize(ser.MSG_PLAYER_POSITION, {x: tank.x, y: tank.y, a: REV_ANGLES[tank.angle]}));
-  };
-  
-  // TODO: move to tank object
-  var doesColideWest = function(){
-    // with game world
-    if((tank.x - GAMEOPTS.speed) <= 0.0){
-      return true;
-    };
-    return false;
-  };
-  var doesColideEast = function(){
-    if((tank.x + tank.w) >= GAMEOPTS.w){
-      return true;
-    };
-    return false;
-  };
-  var doesColideNorth = function(){
-    // with game world
-    if((tank.y - GAMEOPTS.speed) <= 0.0){
-      return true;
-    };
-    return false;
-  };
-  var doesColideSouth = function(){
-    if((tank.y + tank.h) >= GAMEOPTS.h){
-      return true;
-    };
-    return false;
   };
   
   // creates a cloud of debris and adds randov velocities to each particle

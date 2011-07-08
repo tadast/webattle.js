@@ -74,3 +74,65 @@ Tank.prototype.bulletExitPoint = function(){
   var bepY = c[1] + (this.h/2) * - Math.cos(this.angle);
   return [bepX - 2, bepY - 2]; //compensate bullet size
 };
+
+Tank.prototype.onArrowUp = function(){
+  this.scale(1, 1);
+  this.setAngle(ANGLES.n);
+  if (!this.doesColideNorth()){
+    this.move(0, -this.game.getOpts().speed);
+  };
+};
+
+Tank.prototype.onArrowDown = function(){
+  this.scale(-1, 1);
+  this.setAngle(ANGLES.s);
+  if (!this.doesColideSouth()){
+    this.move(0, this.game.getOpts().speed);
+  };
+};
+
+Tank.prototype.onArrowRight = function(){
+  this.scale(-1, 1);
+  this.setAngle(ANGLES.e);
+  if (!this.doesColideEast()){
+    this.move(this.game.getOpts().speed, 0);
+  };
+};
+
+Tank.prototype.onArrowLeft = function(){
+  this.scale(1, 1);
+  this.setAngle(ANGLES.w);
+  if (!this.doesColideWest()){
+    this.move(-this.game.getOpts().speed, 0);
+  };
+};
+
+// colisions with game world 
+Tank.prototype.doesColideWest = function(){
+  if((tank.x - this.game.getOpts().speed) <= 0.0){
+    return true;
+  };
+  return false;
+};
+
+Tank.prototype.doesColideEast = function(){
+  if((tank.x + tank.w) >= this.game.getOpts().w){
+    return true;
+  };
+  return false;
+};
+
+Tank.prototype.doesColideNorth = function(){
+  // with game world
+  if((tank.y - this.game.getOpts().speed) <= 0.0){
+    return true;
+  };
+  return false;
+};
+
+Tank.prototype.doesColideSouth = function(){
+  if((tank.y + tank.h) >= this.game.getOpts().h){
+    return true;
+  };
+  return false;
+};
