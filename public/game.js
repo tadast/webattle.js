@@ -7,11 +7,14 @@ var Game = function(sock, ser) {
     color: '#000', 
     speed: 3
   };
+  var ANGLES = {n: 0.0, e: 1.57079633, s: 3.1415926, w: 4.71238898}; //north, east, south, west
+  var REV_ANGLES = {0.0: 'n', 1.57079633: 'e', 3.1415926: 's', 4.71238898: 'w'};
   this.getOpts = function getOpts(){
     return GAMEOPTS;
   };
-  var ANGLES = {n: 0.0, e: 1.57079633, s: 3.1415926, w: 4.71238898} //north, east, south, west
-  var REV_ANGLES = {0.0: 'n', 1.57079633: 'e', 3.1415926: 's', 4.71238898: 'w'}
+  this.getAngles = function(){
+    return ANGLES;
+  }
   this.scene = sjs.Scene(GAMEOPTS);
   
   var socket = sock;

@@ -7,8 +7,7 @@ var Player = new require('./lib/player.js');
 var server = connect.createServer();
 server.use(connect.static(__dirname));
 server.use(require('browserify')({
-    base : __dirname + '/lib',
-    require: ['bison'],
+    require: ['bison', __dirname + '/lib/serializer', __dirname + '/lib/config'],
     mount : '/browserify.js',
 }));
 server.listen(Config.port);

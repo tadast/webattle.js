@@ -77,7 +77,7 @@ Tank.prototype.bulletExitPoint = function(){
 
 Tank.prototype.onArrowUp = function(){
   this.scale(1, 1);
-  this.setAngle(ANGLES.n);
+  this.setAngle(this.game.getAngles().n);
   if (!this.doesColideNorth()){
     this.move(0, -this.game.getOpts().speed);
   };
@@ -85,7 +85,7 @@ Tank.prototype.onArrowUp = function(){
 
 Tank.prototype.onArrowDown = function(){
   this.scale(-1, 1);
-  this.setAngle(ANGLES.s);
+  this.setAngle(this.game.getAngles().s);
   if (!this.doesColideSouth()){
     this.move(0, this.game.getOpts().speed);
   };
@@ -93,7 +93,7 @@ Tank.prototype.onArrowDown = function(){
 
 Tank.prototype.onArrowRight = function(){
   this.scale(-1, 1);
-  this.setAngle(ANGLES.e);
+  this.setAngle(this.game.getAngles().e);
   if (!this.doesColideEast()){
     this.move(this.game.getOpts().speed, 0);
   };
@@ -101,7 +101,7 @@ Tank.prototype.onArrowRight = function(){
 
 Tank.prototype.onArrowLeft = function(){
   this.scale(1, 1);
-  this.setAngle(ANGLES.w);
+  this.setAngle(this.game.getAngles().w);
   if (!this.doesColideWest()){
     this.move(-this.game.getOpts().speed, 0);
   };
@@ -109,14 +109,14 @@ Tank.prototype.onArrowLeft = function(){
 
 // colisions with game world 
 Tank.prototype.doesColideWest = function(){
-  if((tank.x - this.game.getOpts().speed) <= 0.0){
+  if((this.x - this.game.getOpts().speed) <= 0.0){
     return true;
   };
   return false;
 };
 
 Tank.prototype.doesColideEast = function(){
-  if((tank.x + tank.w) >= this.game.getOpts().w){
+  if((this.x + this.w) >= this.game.getOpts().w){
     return true;
   };
   return false;
@@ -124,14 +124,14 @@ Tank.prototype.doesColideEast = function(){
 
 Tank.prototype.doesColideNorth = function(){
   // with game world
-  if((tank.y - this.game.getOpts().speed) <= 0.0){
+  if((this.y - this.game.getOpts().speed) <= 0.0){
     return true;
   };
   return false;
 };
 
 Tank.prototype.doesColideSouth = function(){
-  if((tank.y + tank.h) >= this.game.getOpts().h){
+  if((this.y + this.h) >= this.game.getOpts().h){
     return true;
   };
   return false;
