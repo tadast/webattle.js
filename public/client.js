@@ -19,6 +19,9 @@ window.onload = function() {
           // console.log("Adding player " + msg.i);
           game.createPlayer(msg.i);
           break;
+        case Serializer.MSG_PING:
+          socket.send(data);
+          break;
         case Serializer.MSG_PLAYER_POSITION:
           game.updatePlayer(msg);
           break;

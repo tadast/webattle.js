@@ -17,6 +17,7 @@ var socket = io.listen(server);
 
 socket.on('connection', function(client){
   addPlayer(client);
+  sendPing(client);
   
   client.on('message', function(data){
     var msg = Serializer.deserialize(data);
@@ -29,6 +30,11 @@ socket.on('connection', function(client){
           break;
         case Serializer.MSG_NEW_BULLET:
           client.broadcast(data);
+          break;
+        case Serializer.MSG_PING:
+          var now = Date.now();
+          console.log("Ping[" + getPlayerId(client.sessionId) + "]: " + (now - msg.time) + "ms");
+          sendPing(client);
           break;
         default:
           console.log("unknown message:" + msg);
@@ -64,15 +70,23 @@ var introduceExistingSprites = function(client){
   };
 }
 
-// return "internal" player id given client's sessionId
-var getPlayerId = function(sid){
+var getPlayerBySid = function(sid){
   for (var i=0; i < players.length; i++) {
     if(players[i].sid == sid){
-      return players[i].id;
+      return players[i];
       break;
     };
   };
   console.log("Player does not exist!" + sid);
+  return null;
+}
+
+// return "internal" player id given client's sessionId
+var getPlayerId = function(sid){
+  var player = getPlayerBySid(sid);
+  if (player) {
+    return player.id;
+  };
   return NaN;
 }
 
@@ -86,6 +100,13 @@ var addPlayer = function(client){
   introduceExistingSprites(client);
   players.push(p);
   console.log("Player added " + p.id);
+};
+
+var sendPing = function(client) {
+  setTimeout(function() {
+    var timestamp = String(Date.now());
+    client.send(Serializer.serialize(Serializer.MSG_PING, {time: timestamp}));
+  }, 3000);
 };
 
 console.log('Yaw dawg, point your ugly browser to http://'+Config.ip+':'+Config.port);
