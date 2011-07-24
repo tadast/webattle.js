@@ -136,3 +136,37 @@ Tank.prototype.doesColideSouth = function(){
   };
   return false;
 };
+
+// override draw method when canvas is on. For fun
+Tank.prototype.canvasUpdate = function updateCanvas (layer) {
+    if(layer)
+        var ctx = layer.ctx;
+    else
+        var ctx = this.layer.ctx;
+    ctx.save();
+    ctx.translate(this.x + this.w/2 | 0, this.y + this.h/2 | 0);
+    ctx.rotate(this.angle);
+    if(this.xscale != 1 || this.yscale != 1)
+        ctx.scale(this.xscale, this.yscale);
+    ctx.globalAlpha = this.opacity;
+    ctx.translate(-this.w/2 | 0, -this.h/2 | 0);
+    // handle background colors.
+    if(this.color) {
+        ctx.fillStyle = this.color;
+        ctx.fillRect(0, 0, this.w, this.h);
+    }
+    // handle repeating images, a way to implement repeating background in canvas
+
+    ctx.fillStyle = "#B06F00";
+    ctx.fillRect(this.xoffset, this.yoffset + 2, this.w, this.h - 4);
+
+    ctx.fillStyle = "#FFD182";
+    ctx.fillRect(this.xoffset + (this.w/2) -2, this.yoffset-3, 4, this.h/2);
+    
+    ctx.fillStyle = "#5C3A00";
+    ctx.fillRect(this.xoffset, this.yoffset, 7, this.h);
+    ctx.fillRect(this.xoffset + this.w -7, this.yoffset, 7, this.h);
+    
+    ctx.restore();
+    return this;
+};

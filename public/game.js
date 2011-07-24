@@ -89,7 +89,10 @@ var Game = function(sock, ser) {
         while(x = bricks.iterate()){
           x.update();
         }
-        bricksDrawn = true;
+        // after image is loaded and bricks are drawn, stop redrawing them as they are static
+        if (bricks.iterate().img.complete) {
+          bricksDrawn = true;
+        };
       }
     };
     
@@ -113,14 +116,15 @@ var Game = function(sock, ser) {
     } else {
       tankState = {x: tank.x, y: tank.y};
     };
-    if(input.keyboard.space){
+    
+    if(input.keyboard.space || input.mousedown){
       tank.shoot();
     };
 
     tank.update();
 
     if(ticker.currentTick % 30 == 0) {
-        result.innerHTML = ' ' + ticker.load + '%';
+        result.innerHTML = ticker.fps;
     }
     socket.send(ser.serialize(ser.MSG_PLAYER_POSITION, {x: tank.x, y: tank.y, a: REV_ANGLES[tank.angle]}));
   };
