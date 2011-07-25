@@ -5,16 +5,24 @@ var Game = function(sock, ser) {
     w: this.mapLoader.widthInPixels(), 
     h: this.mapLoader.heightInPixels(), 
     color: '#000', 
-    speed: 3
+    speed: 2
   };
   var ANGLES = {n: 0.0, e: 1.57079633, s: 3.1415926, w: 4.71238898}; //north, east, south, west
   var REV_ANGLES = {0.0: 'n', 1.57079633: 'e', 3.1415926: 's', 4.71238898: 'w'};
-  this.getOpts = function getOpts(){
+  var lagMultiplyer = 1.0;
+  
+  this.getOpts = function(){
     return GAMEOPTS;
   };
+  
   this.getAngles = function(){
     return ANGLES;
-  }
+  };
+  
+  this.getLagMultiplyer = function(){
+    return Math.max(1, lagMultiplyer);
+  };
+  
   this.scene = sjs.Scene(GAMEOPTS);
   
   var socket = sock;
@@ -39,12 +47,13 @@ var Game = function(sock, ser) {
   var bricksDrawn = false; // we only need to draw bricks once, as staticLayer is set to not autoclear;
   var tankState = {x: tank.x, y: tank.y};
   // var cycle = new sjs.Cycle([[0, 0, 1]]);
+  var lastScene = Date.now();
   function paint() {
     
     // -------- HANDLE BULLETS ----------
     var bul;
     while(bul = bullets.iterate()) {
-      bul.applyVelocity();
+      bul.applyVelocity(lagMultiplyer);
       bul.update();
       if(bul.x < 0 || bul.y < 0 || bul.x > GAMEOPTS.w || bul.y > GAMEOPTS.h || bul.collidesWithArray(bricks)){
           bullets.remove(bul);
@@ -127,6 +136,10 @@ var Game = function(sock, ser) {
         result.innerHTML = ticker.fps;
     }
     socket.send(ser.serialize(ser.MSG_PLAYER_POSITION, {x: tank.x, y: tank.y, a: REV_ANGLES[tank.angle]}));
+    
+    var now = Date.now();
+    lagMultiplyer = (now - lastScene) / 25.0;
+    lastScene = now;
   };
   
   // creates a cloud of debris and adds randov velocities to each particle
@@ -155,7 +168,6 @@ var Game = function(sock, ser) {
   // send: optional parameter. If true then other players will receive info about bullet.
   // send is only used for locally created bullets
   this.addBullet = function(msg, send){
-    var speed_multipl = 1.2;
     var b = this.scene.Sprite(null, dynamicLayer);
     b.position(msg.x, msg.y);
     b.size(4, 4);

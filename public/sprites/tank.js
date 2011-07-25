@@ -56,7 +56,7 @@ Tank.prototype.shoot = function(){
   if (!this.canFire()) {
     return false;
   };
-  var speed_multipl = 1.2;
+  var speed_multipl = 1.4;
   var bep = this.bulletExitPoint();
   var msg = {x: bep[0], y: bep[1]};
   msg.xv = speed_multipl * this.speed * Math.sin(this.angle);
@@ -70,8 +70,8 @@ Tank.prototype.shoot = function(){
 // returns array [x, y]
 Tank.prototype.bulletExitPoint = function(){
   var c = this.center();
-  var bepX = c[0] + (this.w/2) * Math.sin(this.angle);
-  var bepY = c[1] + (this.h/2) * - Math.cos(this.angle);
+  var bepX = c[0] + (this.w/2 + 4) * Math.sin(this.angle);
+  var bepY = c[1] + (this.h/2 + 4) * - Math.cos(this.angle);
   return [bepX - 2, bepY - 2]; //compensate bullet size
 };
 
@@ -79,7 +79,7 @@ Tank.prototype.onArrowUp = function(){
   this.scale(1, 1);
   this.setAngle(this.game.getAngles().n);
   if (!this.doesColideNorth()){
-    this.move(0, -this.game.getOpts().speed);
+    this.move(0, -this.lagCompensatedSpeed());
   };
 };
 
@@ -87,7 +87,7 @@ Tank.prototype.onArrowDown = function(){
   this.scale(-1, 1);
   this.setAngle(this.game.getAngles().s);
   if (!this.doesColideSouth()){
-    this.move(0, this.game.getOpts().speed);
+    this.move(0, this.lagCompensatedSpeed());
   };
 };
 
@@ -95,7 +95,7 @@ Tank.prototype.onArrowRight = function(){
   this.scale(-1, 1);
   this.setAngle(this.game.getAngles().e);
   if (!this.doesColideEast()){
-    this.move(this.game.getOpts().speed, 0);
+    this.move(this.lagCompensatedSpeed(), 0);
   };
 };
 
@@ -103,13 +103,13 @@ Tank.prototype.onArrowLeft = function(){
   this.scale(1, 1);
   this.setAngle(this.game.getAngles().w);
   if (!this.doesColideWest()){
-    this.move(-this.game.getOpts().speed, 0);
+    this.move(-this.lagCompensatedSpeed(), 0);
   };
 };
 
 // colisions with game world 
 Tank.prototype.doesColideWest = function(){
-  if((this.x - this.game.getOpts().speed) <= 0.0){
+  if((this.x - this.lagCompensatedSpeed()) <= 0.0){
     return true;
   };
   return false;
@@ -124,7 +124,7 @@ Tank.prototype.doesColideEast = function(){
 
 Tank.prototype.doesColideNorth = function(){
   // with game world
-  if((this.y - this.game.getOpts().speed) <= 0.0){
+  if((this.y - this.lagCompensatedSpeed()) <= 0.0){
     return true;
   };
   return false;
@@ -169,4 +169,8 @@ Tank.prototype.canvasUpdate = function updateCanvas (layer) {
     
     ctx.restore();
     return this;
+};
+
+Tank.prototype.lagCompensatedSpeed = function getLagCompensatedSpeed(){
+  return this.game.getOpts().speed * this.game.getLagMultiplyer();
 };
