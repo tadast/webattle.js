@@ -2,3 +2,6 @@ html, body{
   margin: auto;
   width: 480px;
 }
+body div{
+  margin: auto;
+}

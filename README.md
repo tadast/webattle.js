@@ -39,9 +39,14 @@ If you are just starting to learn and find code too difficult, checkout earlier 
 
 ## Live Demo
 
-Coming soon
+In-progress version is hosted in Joynet's cloud.
+
+[http://uhoh.no.de](http://uhoh.no.de)
+
 
 ## Changelog
+
+0.0.4 Added node_packages folder to git repo for easier deployment to Joynet smart node machine. Shootable bricks. FPS instead of CPU load percentage. Optimize for iPhone screen (No controls for iphone yet). Bugfixes.
 
 0.0.3 Added a Tank class. It uses prototypal inheritance to inherit from Sprite. Tanks now explode on collision with bullet. Issue when remote players were flickering using canvas backend is fixed now.
 

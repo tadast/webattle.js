@@ -1,5 +1,5 @@
 var Game = function(sock, ser) {
-  this.mapLoader = new MapLoader(defaultMap);
+  this.mapLoader = new MapLoader(coolMap);
   
   var GAMEOPTS = {
     w: this.mapLoader.widthInPixels(), 
@@ -27,7 +27,7 @@ var Game = function(sock, ser) {
   
   var socket = sock;
   var staticOpts = GAMEOPTS;
-  staticOpts['autoClear'] = false;
+  //staticOpts['autoClear'] = false;
   var staticLayer = this.scene.Layer('staticLayer', staticOpts );
   var dynamicLayer = this.scene.Layer('dynamicLayer', {w: GAMEOPTS.w, h: GAMEOPTS.h});
 
@@ -44,7 +44,6 @@ var Game = function(sock, ser) {
 
   var result = document.getElementById('result');
 
-  var bricksDrawn = false; // we only need to draw bricks once, as staticLayer is set to not autoclear;
   var tankState = {x: tank.x, y: tank.y};
   // var cycle = new sjs.Cycle([[0, 0, 1]]);
   var lastScene = Date.now();
@@ -55,18 +54,25 @@ var Game = function(sock, ser) {
     while(bul = bullets.iterate()) {
       bul.applyVelocity(lagMultiplyer);
       bul.update();
-      if(bul.x < 0 || bul.y < 0 || bul.x > GAMEOPTS.w || bul.y > GAMEOPTS.h || bul.collidesWithArray(bricks)){
+      var brick = bul.collidesWithArray(bricks);
+      if(bul.x < 0 || bul.y < 0 || bul.x > GAMEOPTS.w || bul.y > GAMEOPTS.h || brick){
           bullets.remove(bul);
-          // bul.remove();
+          bul.remove();
+          if (brick) {
+            bricks.remove(brick);
+            brick.remove();
+          };
       };
       if(bul.collidesWith(tank)){
         bullets.remove(bul);
+        bul.remove();
         explosion(tank);
         tank.reset();
       };
       var collidePlayer;
       if(collidePlayer = bul.collidesWithArray(players)){
         bullets.remove(bul);
+        bul.remove();
         explosion(collidePlayer);
         collidePlayer.reset(true);
       };
@@ -76,9 +82,8 @@ var Game = function(sock, ser) {
     while(debri = debris.iterate()) {
         debri.applyVelocity();
         if(debri.rv < 0.001) {
-        //if(false){
             debris.remove(debri);
-            //debri.remove();
+            debri.remove();
         } else {
             debri.update();
         }
@@ -94,14 +99,9 @@ var Game = function(sock, ser) {
       while(x = players.iterate()){
         x.update();
       }
-      if(!bricksDrawn){ // we only draw it once
-        while(x = bricks.iterate()){
-          x.update();
-        }
-        // after image is loaded and bricks are drawn, stop redrawing them as they are static
-        if (bricks.iterate().img.complete) {
-          bricksDrawn = true;
-        };
+      
+      while(x = bricks.iterate()){
+        x.update();
       }
     };
     
@@ -207,8 +207,8 @@ var Game = function(sock, ser) {
     var player;
     while (player = players.iterate()) {
     if(player.id == id){
-      //player.remove();
       players.remove(player);
+      player.remove();
       break;
     };
     // console.log("I haz " + players.lenght + " players now");

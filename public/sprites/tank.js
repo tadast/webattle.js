@@ -39,7 +39,7 @@ Tank.prototype._reset = function _reset(passive){
 };
 
 Tank.prototype.canFire = function canFire(){
-  var delta = 500; // ms
+  var delta = 1500; // ms
   var now = new Date().getTime();
   if(!this.lastShootTime){
     this.lastShootTime = now;
