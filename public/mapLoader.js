@@ -15,7 +15,7 @@ MapLoader.prototype.heightInPixels = function(){
   return this.map.length * this.squareSize;
 };
 
-// this should probably evolve to create lists for all sprites ar once
+// this should probably evolve to create lists for all sprites at once
 MapLoader.prototype.getSpritelistFor = function(scene, layer, spriteId){
   var list = sjs.SpriteList([]);
   for(var i=0; i < this.map.length; i++){

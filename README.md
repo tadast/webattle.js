@@ -2,11 +2,7 @@
 
 ## What up
 
-webattle.js is a sample multiplayer game created with Node.jsm HTML5 and related buzzwords.
-
-## Big Plan
-
-Create massive multiplayer much fun game using native browser technologies so it works on many different devices without a need to install anything.
+webattle.js is a sample multiplayer game created with Node.js, HTML5 and other related buzzwords.
 
 ## Dependencies
 
@@ -15,8 +11,6 @@ Create massive multiplayer much fun game using native browser technologies so it
 * BISON - for efficient serialization
 * browserify - for serving same js files for both server and client side
 * sprite.js - for rendering graphics
-
-TODO: links to all libraries. For now jfgi, please.
 
 ## Trying out
 
@@ -42,7 +36,6 @@ If you are just starting to learn and find code too difficult, checkout earlier 
 In-progress version is hosted in Joynet's cloud.
 
 [http://uhoh.no.de](http://uhoh.no.de)
-
 
 ## Changelog
 

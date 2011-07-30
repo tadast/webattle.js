@@ -27,11 +27,9 @@ var Game = function(sock, ser) {
   
   var socket = sock;
   var staticOpts = GAMEOPTS;
-  //staticOpts['autoClear'] = false;
   var staticLayer = this.scene.Layer('staticLayer', staticOpts );
   var dynamicLayer = this.scene.Layer('dynamicLayer', {w: GAMEOPTS.w, h: GAMEOPTS.h});
 
-  // keep all game objects in spritelists
   var debris = sjs.SpriteList([]); 
   var players = sjs.SpriteList([]);
   var bullets = sjs.SpriteList([]);
@@ -99,7 +97,6 @@ var Game = function(sock, ser) {
       while(x = players.iterate()){
         x.update();
       }
-      
       while(x = bricks.iterate()){
         x.update();
       }
@@ -119,7 +116,6 @@ var Game = function(sock, ser) {
       if (tank.x == tankState.x && tank.y == tankState.y){ //TODO: fix collision detection to work without this hack
         tank.move(0, GAMEOPTS.speed);
       } else {
-        //reset previous state
         tank.position(tankState.x, tankState.y);
       }
     } else {

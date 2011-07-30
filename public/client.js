@@ -16,7 +16,6 @@ window.onload = function() {
     if (msg.t) {
       switch (msg.t) {
         case Serializer.MSG_NEW_PLAYER:
-          // console.log("Adding player " + msg.i);
           game.createPlayer(msg.i);
           break;
         case Serializer.MSG_PING:
