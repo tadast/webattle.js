@@ -1,3 +1,4 @@
+<img src="https://github.com/medwezys/webattle.js/raw/master/assets/images/tank24.png">
 # webattle.js
 
 ## What up
