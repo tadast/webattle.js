@@ -36,7 +36,6 @@ var Game = function(sock, ser) {
   var bricks = this.mapLoader.getSpritelistFor(this.scene, staticLayer, 1);
   
   var tank = new Tank(this.scene, dynamicLayer, this);
-  tank.reset();
   
   var input  = new sjs.Input();
 
@@ -136,6 +135,24 @@ var Game = function(sock, ser) {
     var now = Date.now();
     lagMultiplyer = (now - lastScene) / 25.0;
     lastScene = now;
+  };
+  
+  
+  function restart(){
+    cleanList(debris);
+    cleanList(bullets);
+    cleanList(bricks);
+    bricks = this.mapLoader.getSpritelistFor(this.scene, staticLayer, 1);
+    tank.reset();
+  };
+  
+  this.restart = restart;
+  
+  var cleanList = function(list){
+    while(x = list.iterate()){
+      x.remove();
+    };
+    list = sjs.SpriteList([]);
   };
   
   // creates a cloud of debris and adds randov velocities to each particle

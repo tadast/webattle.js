@@ -30,6 +30,12 @@ window.onload = function() {
         case Serializer.MSG_GONE_PLAYER:
           game.removePlayer(msg.i);
           break;
+        case Serializer.MSG_RESTART_GAME:
+          console.log("restarting game after " + msg.ta + " s.");
+            setTimeout(function() {
+              game.restart();
+            }, msg.ta + 1000);
+          break;
         default:
           console.log("unknown message:" + msg);
       };

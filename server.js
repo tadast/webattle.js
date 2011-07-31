@@ -18,10 +18,11 @@ var socket = io.listen(server);
 socket.on('connection', function(client){
   addPlayer(client);
   sendPing(client);
+  initializeRestart();
   
   client.on('message', function(data){
     var msg = Serializer.deserialize(data);
-    // TODO: check if valid before sending all the shi.. I mean data to clients
+    // TODO: check if valid before sending data to clients
     if (msg.t) {
       switch (msg.t) {
         case Serializer.MSG_PLAYER_POSITION:
@@ -109,4 +110,9 @@ var sendPing = function(client) {
   }, 3000);
 };
 
-console.log('Yaw dawg, point your ugly browser to http://'+Config.ip+':'+Config.port);
+var initializeRestart = function(){
+  var msg = Serializer.serialize(Serializer.MSG_RESTART_GAME, {ta: 3});
+  socket.broadcast(msg);
+}
+
+console.log('Server is running on http://'+Config.ip+':'+Config.port);
