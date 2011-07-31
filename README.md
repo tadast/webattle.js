@@ -1,9 +1,8 @@
 <img src="https://github.com/medwezys/webattle.js/raw/master/assets/images/tank24.png">
 # webattle.js
 
-## What up
-
 webattle.js is a sample multiplayer game created with Node.js, HTML5 and other related buzzwords.
+It also works in iOS browsers: swipe to move, tap to fire!
 
 ## Dependencies
 
