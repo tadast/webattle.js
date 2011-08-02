@@ -1,0 +1,78 @@
+<!DOCTYPE html><html>
+<head>
+<title></title>
+<meta name = "viewport" content = "user-scalable=no, width=device-width">
+<style>
+  #sjs0, canvas{
+    border: 1px solid black;
+  }
+</style>
+</head>
+<body style="overflow:hidden">
+
+</body>
+<script src="lib/sprite.js"></script>
+<script>
+
+window.onload = function() {
+    var scene = sjs.Scene({w:480, h:320});
+    var step = 50;
+    var particles = sjs.SpriteList();
+
+    function createParticle(i) {
+        particle = scene.Sprite('assets/images/tank24.png');
+        particle.setX(scene.w / step * i);
+        particle.setY(scene.h / 3);
+        //particle.rv = Math.random() * 0.2;
+        particle.xv = (Math.random() - 0.5) * 5;
+        particle.yv = (Math.random() - 0.5) * 5;
+        particles.add(particle);
+    }
+
+    function createParticles(){
+        for (var i=0; i < step; i++) {
+          createParticle(i);
+        };
+    };
+    var time = Date.now();
+    
+    var particleAmount = 0;
+    var currentFPS = [];
+    var allStats = "";
+    function paint() {
+        var particle;
+        while(particle = particles.iterate()) {
+            particle.applyVelocity();
+            if(particle.y > 296 || particle.y < 0) {
+                particle.yv = -1 * particle.yv;
+            } else if ( particle.x > 456 || particle.x < 0) {
+                particle.xv = -1 * particle.xv;
+            } else {
+                particle.update();
+            }
+        }
+        if(ticker.currentTick % 30 == 0) {
+            currentFPS.push(ticker.fps);
+            if(particles.list.length > particleAmount) {
+              var sum = 0.0;
+              for (var i=0; i < currentFPS.length; i++) {
+                sum += currentFPS[i];
+              };
+              allStats += ("\n p: " + particleAmount + ", fps: " + sum/currentFPS.length);
+              particleAmount = particles.list.length;
+              currentFPS = [];
+              if (particleAmount % 200 == 0) {
+                console.log(allStats);
+              };
+            };
+        }
+        if (Date.now() > time + 5000) {
+          time = Date.now();
+          createParticles();
+        };
+    };
+    var ticker = scene.Ticker(25, paint);
+    ticker.run();
+};
+</script>
+</html>
