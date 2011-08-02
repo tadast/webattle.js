@@ -1,7 +1,8 @@
 <!DOCTYPE html><html>
 <head>
 <title></title>
-<meta name = "viewport" content = "user-scalable=no, width=device-width">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="viewport" content = "width = device-width, initial-scale = 1"/>
 <style>
   #sjs0, canvas{
     border: 1px solid black;
@@ -9,7 +10,7 @@
 </style>
 </head>
 <body style="overflow:hidden">
-
+<div id="results"></div>
 </body>
 <script src="lib/sprite.js"></script>
 <script>
@@ -18,7 +19,8 @@ window.onload = function() {
     var scene = sjs.Scene({w:480, h:320});
     var step = 50;
     var particles = sjs.SpriteList();
-
+    var touchable = 'createTouch' in document;
+    
     function createParticle(i) {
         particle = scene.Sprite('assets/images/tank24.png');
         particle.setX(scene.w / step * i);
@@ -61,8 +63,12 @@ window.onload = function() {
               allStats += ("\n p: " + particleAmount + ", fps: " + sum/currentFPS.length);
               particleAmount = particles.list.length;
               currentFPS = [];
-              if (particleAmount % 200 == 0) {
-                console.log(allStats);
+              if (particleAmount % 200 == 0 || ticker.fps <= 3) {
+                if (touchable) {
+                  document.getElementById('results').innerHTML = allStats;
+                } else {
+                  console.log(allStats);
+                };
               };
             };
         }
