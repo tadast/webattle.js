@@ -14,9 +14,11 @@
   <link href="assets/css/style.css" media="screen" rel="stylesheet" type="text/css" /> 
 </head>
 <body>
-  <span id="result"></span> FPS
-  <br/>
-  <a href="?canvas=1" id="canvas-mode">Use canvas backend.</a> <a href="?html=1" id="html-mode">Use HTML backend</a>
+  <div id="controls" style="display:none;">
+    <span id="result"></span> FPS
+    <br/>
+    <a href="?canvas=1" id="canvas-mode">Use canvas backend.</a> <a href="?html=1" id="html-mode">Use HTML backend</a>
+  </div>
 </body>
 <script>
   if(window.location.href.indexOf('canvas') != -1) {
