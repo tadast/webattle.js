@@ -1,9 +1,9 @@
-var Tank = function(scene, background, game){
+var Tank = function(scene, background, game, imageUrl){
   //-- Sprite.js setup --
   this.s = 24;
   this.scene = scene;
   this.layer = background;
-  this.src = 'assets/images/tank24.png';
+  this.src = imageUrl || 'assets/images/enemy_tank_24.png';
   this.setDom();
   this.loadImg(this.src);
   this.size(this.s,this.s);
