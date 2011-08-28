@@ -1,4 +1,4 @@
-var Tank = function(scene, layer, game, imageUrl){
+var Tank = function(scene, layer, game, id, imageUrl){
   //-- Sprite.js setup --
   this.s = 24;
   this.scene = scene;
@@ -9,7 +9,7 @@ var Tank = function(scene, layer, game, imageUrl){
   this.src = imageUrl || 'assets/images/enemy_tank_24.png';
   this.loadImg(this.src);
   this.size(this.s,this.s);
-  //-- Custom logic --
+  this.id = id;
   this.speed = game.getOpts().speed;
   return this;
 };
@@ -62,8 +62,8 @@ Tank.prototype.shoot = function(){
   var msg = {x: bep[0], y: bep[1]};
   msg.xv = speed_multipl * this.speed * Math.sin(this.angle);
   msg.yv = speed_multipl * -this.speed * Math.cos(this.angle);
-  var b = this.game.addBullet(msg, true);
-  
+
+  var b = this.game.addShell(msg, true);
   return b;
 };
 

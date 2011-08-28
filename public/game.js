@@ -35,7 +35,7 @@ var Game = function(sock, ser) {
   var shells = sjs.SpriteList([]);
   var bricks = this.mapLoader.getSpritelistFor(this.scene, staticLayer, 1);
   
-  var tank = new Tank(this.scene, dynamicLayer, this, 'assets/images/tank24.png');
+  var tank = new Tank(this.scene, dynamicLayer, this, -1, 'assets/images/tank24.png');
   
   var input  = new sjs.Input();
 
@@ -47,31 +47,33 @@ var Game = function(sock, ser) {
   function paint() {
     
     // -------- HANDLE shells ----------
-    var bul;
-    while(bul = shells.iterate()) {
-      bul.applyVelocity(lagMultiplyer);
-      bul.update();
-      var brick = bul.collidesWithArray(bricks);
-      if(bul.x < 0 || bul.y < 0 || bul.x > GAMEOPTS.w || bul.y > GAMEOPTS.h || brick){
-          shells.remove(bul);
-          bul.remove();
+    var shell;
+    while(shell = shells.iterate()) {
+      shell.applyVelocity(lagMultiplyer);
+      shell.update();
+      var brick = shell.collidesWithArray(bricks);
+      if(shell.x < 0 || shell.y < 0 || shell.x > GAMEOPTS.w || shell.y > GAMEOPTS.h || brick){
+          shells.remove(shell);
+          shell.remove();
           if (brick) {
             bricks.remove(brick);
             brick.remove();
           };
       };
-      if(bul.collidesWith(tank)){
-        shells.remove(bul);
-        bul.remove();
+      if(shell.collidesWith(tank) && shell.tankId !== undefined){
+        shells.remove(shell);
+        shell.remove();
         explosion(tank);
         tank.reset();
       };
       var collidePlayer;
-      if(collidePlayer = bul.collidesWithArray(players)){
-        shells.remove(bul);
-        bul.remove();
-        explosion(collidePlayer);
-        collidePlayer.reset(true);
+      if(collidePlayer = shell.collidesWithArray(players)){
+        if (collidePlayer.id != shell.tankId) { // collision with self shell can occur due to network quirks
+          shells.remove(shell);
+          shell.remove();
+          explosion(collidePlayer);
+          collidePlayer.reset(true);
+        };
       };
     };
     // -------- HANDLE EXPLOSION DEBRIS ---
@@ -127,9 +129,9 @@ var Game = function(sock, ser) {
 
     tank.update();
 
-    if(ticker.currentTick % 30 == 0) {
-        result.innerHTML = ticker.fps;
-    }
+    // if(ticker.currentTick % 30 == 0) {
+    //     result.innerHTML = ticker.fps;
+    // }
     socket.send(ser.serialize(ser.MSG_PLAYER_POSITION, {x: tank.x, y: tank.y, a: REV_ANGLES[tank.angle]}));
     
     var now = Date.now();
@@ -180,7 +182,7 @@ var Game = function(sock, ser) {
   // msg: {x : x position, y: y position, xv: x velocity, yv: y velocity}
   // send: optional parameter. If true then other players will receive info about shell.
   // send is only used for locally created shells
-  this.addBullet = function(msg, send){
+  this.addShell = function(msg, send){
     var shell = new Shell(this.scene, dynamicLayer, this);
     shell.paramsFromMessage(msg);
     shells.add(shell);
@@ -191,11 +193,9 @@ var Game = function(sock, ser) {
   };
   
   this.createPlayer = function(id){
-    var tmpPlayer = new Tank(this.scene, dynamicLayer, this);
-    tmpPlayer.id = id; //ugh, adding id property to sprite illegaly
+    var tmpPlayer = new Tank(this.scene, dynamicLayer, this, id);
     players.add(tmpPlayer);
     tmpPlayer.reset(true);
-    // console.log("I haz " + players.length + " playerz now");
   };
   
   // msg is a hash of {i: id, x: x, y: y}
@@ -214,13 +214,12 @@ var Game = function(sock, ser) {
   this.removePlayer = function(id){
     var player;
     while (player = players.iterate()) {
-    if(player.id == id){
-      players.remove(player);
-      player.remove();
-      break;
+      if(player.id == id){
+        players.remove(player);
+        player.remove();
+        break;
+      };
     };
-    // console.log("I haz " + players.lenght + " players now");
-  };
   };
   var ticker = this.scene.Ticker(35, paint);
   ticker.run();

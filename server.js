@@ -30,7 +30,8 @@ socket.on('connection', function(client){
           client.broadcast(Serializer.serialize(msg.t, msg));
           break;
         case Serializer.MSG_NEW_SHELL:
-          client.broadcast(data);
+          msg.tankId = getPlayerId(client.sessionId);
+          client.broadcast(Serializer.serialize(msg.t, msg));
           break;
         case Serializer.MSG_PING:
           var now = Date.now();

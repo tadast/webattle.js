@@ -25,7 +25,7 @@ window.onload = function() {
           game.updatePlayer(msg);
           break;
         case Serializer.MSG_NEW_SHELL:
-          game.addBullet(msg);
+          game.addShell(msg);
           break;
         case Serializer.MSG_GONE_PLAYER:
           game.removePlayer(msg.i);
