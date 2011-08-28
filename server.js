@@ -112,8 +112,7 @@ var sendPing = function(client) {
 };
 
 var initializeRestart = function(){
-  if (players.length == 1) return true;
-  var after = 3;
+  var after = 1;
   if (players.length > 2) {
     after = 30;
   };

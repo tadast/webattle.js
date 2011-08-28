@@ -17,11 +17,19 @@ var Tank = function(scene, layer, game, id, imageUrl){
 Tank.prototype = new sjs.Sprite();
 Tank.prototype.constructor = Tank;
 
+Tank.prototype.hide = function hide(){
+  this.size(0,0);
+  this.x = -100;
+  this.y = -100;
+};
+
 // passive does not place the tank in a new position. Used for remote tanks
 // that update their position itselves
 Tank.prototype.reset = function reset(passive){
   this.size(0,0);
   var tank = this;
+  this.x = -100;
+  this.y = -100;
   setTimeout(function(){tank._reset(passive)}, 1500);
 };
 

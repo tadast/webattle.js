@@ -36,6 +36,7 @@ var Game = function(sock, ser) {
   var bricks = this.mapLoader.getSpritelistFor(this.scene, staticLayer, 1);
   
   var tank = new Tank(this.scene, dynamicLayer, this, -1, 'assets/images/tank24.png');
+  tank.hide();
   
   var input  = new sjs.Input();
 
