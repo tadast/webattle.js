@@ -113,9 +113,9 @@ var sendPing = function(client) {
 
 var initializeRestart = function(){
   var after = 1;
-  if (players.length > 2) {
-    after = 30;
-  };
+  // if (players.length > 2) {
+  //   after = 30;
+  // };
   var msg = Serializer.serialize(Serializer.MSG_RESTART_GAME, {ta: after});
   socket.broadcast(msg);
 }
