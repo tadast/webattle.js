@@ -32,7 +32,7 @@ var Game = function(sock, ser) {
 
   var debris = sjs.SpriteList([]); 
   var players = sjs.SpriteList([]);
-  var bullets = sjs.SpriteList([]);
+  var shells = sjs.SpriteList([]);
   var bricks = this.mapLoader.getSpritelistFor(this.scene, staticLayer, 1);
   
   var tank = new Tank(this.scene, dynamicLayer, this, 'assets/images/tank24.png');
@@ -46,14 +46,14 @@ var Game = function(sock, ser) {
   var lastScene = Date.now();
   function paint() {
     
-    // -------- HANDLE BULLETS ----------
+    // -------- HANDLE shells ----------
     var bul;
-    while(bul = bullets.iterate()) {
+    while(bul = shells.iterate()) {
       bul.applyVelocity(lagMultiplyer);
       bul.update();
       var brick = bul.collidesWithArray(bricks);
       if(bul.x < 0 || bul.y < 0 || bul.x > GAMEOPTS.w || bul.y > GAMEOPTS.h || brick){
-          bullets.remove(bul);
+          shells.remove(bul);
           bul.remove();
           if (brick) {
             bricks.remove(brick);
@@ -61,14 +61,14 @@ var Game = function(sock, ser) {
           };
       };
       if(bul.collidesWith(tank)){
-        bullets.remove(bul);
+        shells.remove(bul);
         bul.remove();
         explosion(tank);
         tank.reset();
       };
       var collidePlayer;
       if(collidePlayer = bul.collidesWithArray(players)){
-        bullets.remove(bul);
+        shells.remove(bul);
         bul.remove();
         explosion(collidePlayer);
         collidePlayer.reset(true);
@@ -140,7 +140,7 @@ var Game = function(sock, ser) {
   
   function restart(){
     cleanList(debris);
-    cleanList(bullets);
+    cleanList(shells);
     cleanList(bricks);
     bricks = this.mapLoader.getSpritelistFor(this.scene, staticLayer, 1);
     tank.reset();
@@ -178,21 +178,16 @@ var Game = function(sock, ser) {
     debris.add(_debris);
   }
   // msg: {x : x position, y: y position, xv: x velocity, yv: y velocity}
-  // send: optional parameter. If true then other players will receive info about bullet.
-  // send is only used for locally created bullets
+  // send: optional parameter. If true then other players will receive info about shell.
+  // send is only used for locally created shells
   this.addBullet = function(msg, send){
-    var b = this.scene.Sprite(null, dynamicLayer);
-    b.position(msg.x, msg.y);
-    b.size(4, 4);
-    b.setColor('#fff');
-    b.xv = msg.xv;
-    b.yv = msg.yv;
-    b.update();
-    bullets.add(b);
+    var shell = new Shell(this.scene, dynamicLayer, this);
+    shell.paramsFromMessage(msg);
+    shells.add(shell);
     if (send){
-      socket.send(ser.serialize(ser.MSG_NEW_BULLET, {x: b.x, y: b.y, xv: b.xv, yv: b.yv}));
+      socket.send(ser.serialize(ser.MSG_NEW_SHELL, {x: shell.x, y: shell.y, xv: shell.xv, yv: shell.yv}));
     };
-    return b;
+    return shell;
   };
   
   this.createPlayer = function(id){

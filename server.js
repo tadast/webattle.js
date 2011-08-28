@@ -29,7 +29,7 @@ socket.on('connection', function(client){
           msg["i"] = getPlayerId(client.sessionId);
           client.broadcast(Serializer.serialize(msg.t, msg));
           break;
-        case Serializer.MSG_NEW_BULLET:
+        case Serializer.MSG_NEW_SHELL:
           client.broadcast(data);
           break;
         case Serializer.MSG_PING:

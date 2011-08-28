@@ -1,15 +1,16 @@
-var Tank = function(scene, background, game, imageUrl){
+var Tank = function(scene, layer, game, imageUrl){
   //-- Sprite.js setup --
   this.s = 24;
   this.scene = scene;
-  this.layer = background;
-  this.src = imageUrl || 'assets/images/enemy_tank_24.png';
+  this.layer = layer;
+  this.game = game;
   this.setDom();
+  
+  this.src = imageUrl || 'assets/images/enemy_tank_24.png';
   this.loadImg(this.src);
   this.size(this.s,this.s);
   //-- Custom logic --
   this.speed = game.getOpts().speed;
-  this.game = game;
   return this;
 };
 
@@ -39,7 +40,7 @@ Tank.prototype._reset = function _reset(passive){
 };
 
 Tank.prototype.canFire = function canFire(){
-  var delta = 1500; // ms
+  var delta = 1000; // ms
   var now = new Date().getTime();
   if(!this.lastShootTime){
     this.lastShootTime = now;
@@ -57,7 +58,7 @@ Tank.prototype.shoot = function(){
     return false;
   };
   var speed_multipl = 1.4;
-  var bep = this.bulletExitPoint();
+  var bep = this.shellExitPoint();
   var msg = {x: bep[0], y: bep[1]};
   msg.xv = speed_multipl * this.speed * Math.sin(this.angle);
   msg.yv = speed_multipl * -this.speed * Math.cos(this.angle);
@@ -66,13 +67,13 @@ Tank.prototype.shoot = function(){
   return b;
 };
 
-// calculates starting coordinates of bullet
+// calculates starting coordinates of shell
 // returns array [x, y]
-Tank.prototype.bulletExitPoint = function(){
+Tank.prototype.shellExitPoint = function(){
   var c = this.center();
-  var bepX = c[0] + (this.w/2 + 4) * Math.sin(this.angle);
-  var bepY = c[1] + (this.h/2 + 4) * - Math.cos(this.angle);
-  return [bepX - 2, bepY - 2]; //compensate bullet size
+  var bepX = c[0] + (this.w/2) * Math.sin(this.angle);
+  var bepY = c[1] + (this.h/2) * - Math.cos(this.angle);
+  return [bepX - 2, bepY - 2]; //compensate shell size
 };
 
 Tank.prototype.onArrowUp = function(){
