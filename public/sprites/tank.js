@@ -31,8 +31,6 @@ Tank.prototype.reset = function reset(passive){
   this.x = -100;
   this.y = -100;
   setTimeout(function(){tank._reset(passive)}, 1500);
-  this.score = 25;
-  this.updateScreenScore();
 };
 
 // bit of a dirty hack
@@ -44,6 +42,8 @@ Tank.prototype._reset = function _reset(passive){
     var coords = this.game.mapLoader.randomCoordinateFor(9);
     var compensate = (this.game.mapLoader.squareSize*2-this.w)/2;
     this.position(coords[0]+compensate, coords[1]);
+    this.score = 25;
+    this.updateScreenScore();
     this.update();
   };
   return true;
