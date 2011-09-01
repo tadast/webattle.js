@@ -225,6 +225,8 @@ var Game = function(sock, ser) {
       };
     };
   };
+  
+
   var ticker = this.scene.Ticker(35, paint);
   ticker.run();
 };

@@ -32,6 +32,7 @@ Tank.prototype.reset = function reset(passive){
   this.y = -100;
   setTimeout(function(){tank._reset(passive)}, 1500);
   this.score = 25;
+  this.updateScreenScore();
 };
 
 // bit of a dirty hack
@@ -74,6 +75,7 @@ Tank.prototype.shoot = function(){
   msg.yv = speed_multipl * -this.speed * Math.cos(this.angle);
 
   var b = this.game.addShell(msg, true);
+  this.updateScreenScore();
   return b;
 };
 
@@ -188,4 +190,9 @@ Tank.prototype.lagCompensatedSpeed = function getLagCompensatedSpeed(){
 
 Tank.prototype.giveScoresForHit = function giveScoresForHit(){
   this.score += 20;
+  this.updateScreenScore();
 }
+
+Tank.prototype.updateScreenScore = function(){
+  document.getElementById('score').innerHTML = this.score + '';
+};

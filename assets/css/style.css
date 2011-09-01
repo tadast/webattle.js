@@ -12,3 +12,21 @@ body div{
   -webkit-user-select: none;
   -webkit-tap-highlight-color: rgba(0,0,0,0); 
 }
+
+#console{
+  font-family: verdana, arial, sans-serif;
+  position: absolute;
+  top: 0px;
+  float: left;
+  width: 480px;
+  z-index: 100;
+  color: #888;
+  font-weight: bold;
+}
+#console:active, #console:hover{
+  color: #fff;
+}
+#score{
+  display: inline-block;
+  padding: 4px;
+}
