@@ -61,7 +61,7 @@ var Game = function(sock, ser) {
             brick.remove();
           };
       };
-      if(shell.collidesWith(tank) && shell.tankId !== undefined){
+      if(shell.collidesWith(tank) && !shell.belongsToLocalPlayer()){
         shells.remove(shell);
         shell.remove();
         explosion(tank);
@@ -69,6 +69,9 @@ var Game = function(sock, ser) {
       };
       var collidePlayer;
       if(collidePlayer = shell.collidesWithArray(players)){
+        if(shell.belongsToLocalPlayer()){
+          tank.giveScoresForHit();
+        };
         if (collidePlayer.id != shell.tankId) { // collision with self shell can occur due to network quirks
           shells.remove(shell);
           shell.remove();

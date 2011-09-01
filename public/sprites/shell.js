@@ -18,3 +18,7 @@ Shell.prototype.paramsFromMessage = function paramsFromMessage(msg){
   this.position(msg.x, msg.y);
   this.tankId = msg.tankId;
 };
+
+Shell.prototype.belongsToLocalPlayer = function belongsToLocalPlayer(){
+  return this.tankId === undefined;
+};
