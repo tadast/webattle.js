@@ -30,3 +30,8 @@ body div{
   display: inline-block;
   padding: 4px;
 }
+#max_score{
+  float: right;
+  display: inline-block;
+  padding: 4px;
+}

@@ -42,6 +42,7 @@ Tank.prototype._reset = function _reset(passive){
     var coords = this.game.mapLoader.randomCoordinateFor(9);
     var compensate = (this.game.mapLoader.squareSize*2-this.w)/2;
     this.position(coords[0]+compensate, coords[1]);
+    this.maxScore = Math.max(this.score, (this.maxScore || 0));
     this.score = 25;
     this.updateScreenScore();
     this.update();
@@ -193,6 +194,7 @@ Tank.prototype.giveScoresForHit = function giveScoresForHit(){
   this.updateScreenScore();
 }
 
-Tank.prototype.updateScreenScore = function(){
-  document.getElementById('score').innerHTML = this.score + '';
+Tank.prototype.updateScreenScore = function updateScreenScore(){
+  document.getElementById('score').innerHTML = this.score;
+  document.getElementById('max_score').innerHTML = (this.maxScore || "");
 };
