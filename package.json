@@ -1,6 +1,6 @@
 {
   "name": "webattle.js",
-  "description": "webattle.js is a sample multiplayer game created with Node.js, HTML5 and related buzzwords.",
+  "description": "webattle.js is a simple multiplayer game created with Node.js, HTML5 and related buzzwords.",
   "version": "0.0.1",
   "author": "Tadas Tamosauskas <tadastoo@yahoo.com>",
   "contributors": [

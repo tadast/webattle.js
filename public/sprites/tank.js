@@ -11,6 +11,7 @@ var Tank = function(scene, layer, game, id, imageUrl){
   this.size(this.s,this.s);
   this.id = id;
   this.speed = game.getOpts().speed;
+  this.moved = true; // used for deciding if updating server is needed
   return this;
 };
 
@@ -30,6 +31,7 @@ Tank.prototype.reset = function reset(passive){
   var tank = this;
   this.x = -100;
   this.y = -100;
+  this.moved = true;
   setTimeout(function(){tank._reset(passive)}, 1500);
 };
 
@@ -47,6 +49,7 @@ Tank.prototype._reset = function _reset(passive){
     this.updateScreenScore();
     this.update();
   };
+  this.moved = true;
   return true;
 };
 
@@ -93,7 +96,7 @@ Tank.prototype.onArrowUp = function(){
   this.scale(1, 1);
   this.setAngle(this.game.getAngles().n);
   if (!this.doesColideNorth()){
-    this.move(0, -this.lagCompensatedSpeed());
+    this.moveAndMark(0, -this.lagCompensatedSpeed());
   };
 };
 
@@ -101,7 +104,7 @@ Tank.prototype.onArrowDown = function(){
   this.scale(-1, 1);
   this.setAngle(this.game.getAngles().s);
   if (!this.doesColideSouth()){
-    this.move(0, this.lagCompensatedSpeed());
+    this.moveAndMark(0, this.lagCompensatedSpeed());
   };
 };
 
@@ -109,7 +112,7 @@ Tank.prototype.onArrowRight = function(){
   this.scale(-1, 1);
   this.setAngle(this.game.getAngles().e);
   if (!this.doesColideEast()){
-    this.move(this.lagCompensatedSpeed(), 0);
+    this.moveAndMark(this.lagCompensatedSpeed(), 0);
   };
 };
 
@@ -117,7 +120,7 @@ Tank.prototype.onArrowLeft = function(){
   this.scale(1, 1);
   this.setAngle(this.game.getAngles().w);
   if (!this.doesColideWest()){
-    this.move(-this.lagCompensatedSpeed(), 0);
+    this.moveAndMark(-this.lagCompensatedSpeed(), 0);
   };
 };
 
@@ -183,6 +186,11 @@ Tank.prototype.canvasUpdate = function updateCanvas (layer) {
     
     ctx.restore();
     return this;
+};
+
+Tank.prototype.moveAndMark = function moveAndMark(x, y){
+  this.moved = true;
+  this.move(x, y);
 };
 
 Tank.prototype.lagCompensatedSpeed = function getLagCompensatedSpeed(){

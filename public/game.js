@@ -1,5 +1,5 @@
 var Game = function(sock, ser) {
-  this.mapLoader = new MapLoader(coolMap);
+  this.mapLoader = new MapLoader(defaultMap);
   
   var GAMEOPTS = {
     w: this.mapLoader.widthInPixels(), 
@@ -131,12 +131,11 @@ var Game = function(sock, ser) {
       tank.shoot();
     };
 
-    tank.update();
-
-    // if(ticker.currentTick % 30 == 0) {
-    //     result.innerHTML = ticker.fps;
-    // }
-    socket.send(ser.serialize(ser.MSG_PLAYER_POSITION, {x: tank.x, y: tank.y, a: REV_ANGLES[tank.angle]}));
+    if(tank.moved) {
+      tank.update();
+      socket.send(ser.serialize(ser.MSG_PLAYER_POSITION, {x: tank.x, y: tank.y, a: REV_ANGLES[tank.angle]}));
+      tank.moved = false;
+    };
     
     var now = Date.now();
     lagMultiplyer = (now - lastScene) / 25.0;
