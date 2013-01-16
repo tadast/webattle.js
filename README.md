@@ -16,7 +16,7 @@ It also works in iOS browsers: swipe to move, tap to fire!
 
 If you already have git, node.js and npm
 
-    git clone https://github.com/medwezys/webattle.js webattle
+    git clone git@github.com:medwezys/webattle.js.git webattle
     cd webattle
     npm install
     
