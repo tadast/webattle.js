@@ -1,16 +1,19 @@
 window.onload = function() {
   var Serializer = require('./serializer');
   var Config = require('./config');
-  var socket = new io.Socket(Config.ip,{
-    port: Config.port
-  });
+
+  // var socket = new io.Socket(window.location.hostname ,{
+  //   port: Config.port
+  // });
+  var host = window.location.origin.replace(/^http/, 'ws');
+  var socket = new io.Socket(host);
   var game;
-  
+
   socket.connect();
   socket.on('connect', function(){
     console.log(">>connected");
     game = new Game(socket, Serializer);
-  }); 
+  });
   socket.on('message', function(data){
     var msg = Serializer.deserialize(data);
     if (msg.t) {
@@ -38,8 +41,8 @@ window.onload = function() {
           break;
         default:
           console.log("unknown message:" + msg);
-      };
-    };
+      }
+    }
   });
   socket.on('disconnect', function(){
     console.log("server says: oh, bye");
