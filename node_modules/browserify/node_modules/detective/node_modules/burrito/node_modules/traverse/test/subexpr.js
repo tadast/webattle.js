@@ -1,4 +1,4 @@
-var traverse = require('traverse');
+var traverse = require('../');
 var assert = require('assert');
 
 exports.subexpr = function () {

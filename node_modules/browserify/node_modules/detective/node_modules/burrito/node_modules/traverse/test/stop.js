@@ -1,5 +1,5 @@
 var assert = require('assert');
-var traverse = require('traverse');
+var traverse = require('../');
 
 exports.stop = function () {
     var visits = 0;

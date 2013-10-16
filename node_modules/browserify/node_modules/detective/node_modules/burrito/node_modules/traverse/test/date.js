@@ -1,5 +1,5 @@
 var assert = require('assert');
-var Traverse = require('traverse');
+var Traverse = require('../');
 
 exports.dateEach = function () {
     var obj = { x : new Date, y : 10, z : 5 };

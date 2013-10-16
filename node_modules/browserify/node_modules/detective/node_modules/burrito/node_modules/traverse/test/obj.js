@@ -1,5 +1,5 @@
 var assert = require('assert');
-var Traverse = require('traverse');
+var Traverse = require('../');
 
 exports['traverse an object with nested functions'] = function () {
     var to = setTimeout(function () {

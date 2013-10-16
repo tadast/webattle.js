@@ -1,4 +1,4 @@
-var Traverse = require('traverse');
+var Traverse = require('../');
 var assert = require('assert');
 
 exports['negative update test'] = function () {
