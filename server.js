@@ -13,13 +13,15 @@ server.use(require('browserify')({
 server.listen(Config.port);
 
 var players = [];
-var socket = io.listen(server);
+var socket = io.listen(server, {
+  transports: ["websocket", "htmlfile", "xhr-polling", "jsonp-polling"]
+});
 
 socket.on('connection', function(client){
   addPlayer(client);
   sendPing(client);
   initializeRestart();
-  
+
   client.on('message', function(data){
     var msg = Serializer.deserialize(data);
     // TODO: check if valid before sending data to clients
@@ -43,7 +45,7 @@ socket.on('connection', function(client){
       };
     };
   });
-  
+
   client.on('disconnect',function(){
     console.log('Client disconnected');
     removePlayer(client.sessionId);
