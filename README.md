@@ -7,7 +7,7 @@ It also works in iOS browsers: swipe to move, tap to fire!
 ## Dependencies
 
 * connect - for serving files from server to client (bascially, just index.html for now)
-* socket.io - for flawless client-server communication 
+* ws - for server side sockets
 * BISON - for efficient serialization
 * browserify - for serving same js files for both server and client side
 * sprite.js - for rendering graphics
@@ -16,10 +16,10 @@ It also works in iOS browsers: swipe to move, tap to fire!
 
 If you already have git, node.js and npm
 
-    git clone git@github.com:medwezys/webattle.js.git webattle
+    git clone git@github.com:tadast/webattle.js.git webattle
     cd webattle
     npm install
-    
+
 To run you have two options:
 
     node server.js
@@ -27,17 +27,18 @@ To run you have two options:
     gem install foreman
     foreman start #uses Procfile
 
-Point your browser to http://localhost:3000. If you have deployed it somewhere, edit ip/url and port in lib/config.js.
+Point your browser to http://localhost:5000. If you have deployed it somewhere, edit ip/url and port in lib/config.js.
 
 If you are just starting to learn and find code too difficult, checkout earlier tags, see changelog below.
 
 ## Live Demo
 
-In-progress version is hosted in Joynet's cloud.
-
-[http://uhoh.no.de](http://uhoh.no.de)
+[http://webattle.herokuapp.com](http://webattle.herokuapp.com) - renders using HTML sprites
+[http://webattle.herokuapp.com/?canvas=1](http://webattle.herokuapp.com/?canvas=1) - renders using canvas sprites
 
 ## Changelog
+
+0.0.5 Replaced socket.io with raw sockets and ws. Heroku-compatible
 
 0.0.4 Added node_packages folder to git repo for easier deployment to Joynet smart node machine. Shootable bricks. FPS instead of CPU load percentage. Optimize for iPhone screen (No controls for iphone yet). Bugfixes.
 
