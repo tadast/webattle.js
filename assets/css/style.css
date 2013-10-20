@@ -41,3 +41,28 @@ body div{
   padding-top: 150px;
   padding-bottom: 150px;
 }
+body{
+  font-family: Helvetica;
+  background: url('/assets/images/classy_fabric.png');
+  color: #fafafa;
+}
+.intro{
+  text-align: center;
+}
+.play, .github{
+  display: block;
+  color: #555;
+  text-decoration: none;
+  margin: 1em auto;
+  background-color: #fff;
+}
+a.play{
+  width: 200px;
+  padding: 1em;
+  font-weight: 900;
+  font-size: 1.3em;
+}
+a.github{
+  width: 140px;
+  padding: 0.5em 0;
+}

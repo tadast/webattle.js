@@ -3,34 +3,16 @@
 <head>
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="viewport" content = "width = device-width, height = device-height, initial-scale = 1, user-scalable = no" />
-  <script type="text/javascript" src="/lib/sprite.js"></script>
-  <script type="text/javascript" src="/browserify.js"></script>
-  <script type="text/javascript" src="public/game.js"></script>
-  <script type="text/javascript" src="public/client.js"></script>
-  <script type="text/javascript" src="public/sprites/tank.js"></script>
-  <script type="text/javascript" src="public/sprites/shell.js"></script>
-  <script type="text/javascript" src="public/mapLoader.js"></script>
-  <script type="text/javascript" src="public/maps/coolMap.js"></script>
-  <script type="text/javascript" src="public/maps/defaultMap.js"></script>
   <link href="assets/css/style.css" media="screen" rel="stylesheet" type="text/css" />
 </head>
-<body>
-  <div id='loading'>Loading...</div>
-  <div id="controls" style="display:none;">
-    <span id="result"></span> FPS
-    <br/>
-    <a href="?canvas=1" id="canvas-mode">Use canvas backend.</a> <a href="?html=1" id="html-mode">Use HTML backend</a>
-  </div>
-  <div id='console'>
-    <div id='score'></div>
-    <div id='max_score'></div>
-  </div>
+<body class='intro'>
+  <h1>WEBattle</h1>
+  <section>
+    <p> WEBattle is a multiplayer online game that works in browsers </p>
+    <a href='/play.html'><img src='/assets/images/demo.png' width='413px'/></a>
+    <a class='play' href='/play.html'>Play</a>
+    <small>WASD or Arrows to move, SPACE to shoot</small>
+    <a class='github' href='https://github.com/tadast/webattle.js'>Fork on GitHub</a>
+  </section>
 </body>
-<script>
-  if(window.location.href.indexOf('canvas') != -1) {
-      document.getElementById('canvas-mode').style.display = 'none';
-  } else {
-      document.getElementById('html-mode').style.display = 'none';
-  }
-</script>
 </html>
