@@ -8,9 +8,9 @@ body div{
 * {
   -webkit-touch-callout: none;
   -webkit-text-size-adjust: none;
-  -webkit-tap-highlight-color: rgba(0,0,0,0); 
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
   -webkit-user-select: none;
-  -webkit-tap-highlight-color: rgba(0,0,0,0); 
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 #console{
@@ -34,4 +34,10 @@ body div{
   float: right;
   display: inline-block;
   padding: 4px;
+}
+#loading{
+  text-align: center;
+  color: #999;
+  padding-top: 150px;
+  padding-bottom: 150px;
 }

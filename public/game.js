@@ -45,6 +45,9 @@ var Game = function(sock, ser) {
   var tankState = {x: tank.x, y: tank.y};
   // var cycle = new sjs.Cycle([[0, 0, 1]]);
   var lastScene = Date.now();
+
+  document.getElementById('loading').remove();
+
   function paint() {
 
     // -------- HANDLE shells ----------
