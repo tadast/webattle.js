@@ -6,11 +6,11 @@ var MapLoader = function MapLoader(mapHash){
 };
 
 MapLoader.prototype.constructor = MapLoader;
-  
+
 MapLoader.prototype.widthInPixels = function(){
   return this.map[0].length * this.squareSize;
 };
-  
+
 MapLoader.prototype.heightInPixels = function(){
   return this.map.length * this.squareSize;
 };
@@ -30,26 +30,26 @@ MapLoader.prototype.getSpritelistFor = function(scene, layer, spriteId){
         sprite.loadImg(sprite.src);
         sprite.update();
         list.add(sprite);
-      };
-    };
-  };
+      }
+    }
+  }
   return list;
 };
 
 //returns array of [x,y] coordinates for given identifier in the map
 MapLoader.prototype.getCoordinatesFor = function(id) {
-  if (this.coords[id] != undefined){ //cache
+  if (this.coords[id] !== undefined){ //cache
     return this.coords[id];
-  };
+  }
   this.coords[id] = [];
   for(var i=0; i < this.map.length; i++){
     var row = this.map[i];
     for (var j=0; j < row.length; j++) {
       if(row[j] == id){
         this.coords[id].push(this.toPixels(j, i));
-      };
-    };
-  };
+      }
+    }
+  }
   return this.coords[id];
 };
 
